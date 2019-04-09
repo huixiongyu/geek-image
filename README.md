@@ -14,4 +14,4 @@
 ## 开发
 
 * [vue2-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation) 图片上传组件
-* 
+  * [options](https://www.dropzonejs.com/#configuration-options)
