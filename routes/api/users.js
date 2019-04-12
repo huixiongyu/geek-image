@@ -1,24 +1,91 @@
 const Router = require('koa-router')
 const router = new Router()
+var request = require('request')
+var querystring = require('querystring')
 const bcrypt = require('bcryptjs')
 const gravatar = require('gravatar')
 const jwt = require('jsonwebtoken')
 const passport = require('koa-passport')
 const secretOrKey = require('../../config/keys').secretOrKey
 const tools = require('../../config/tools')
+const MSM = require('../../config/keys').msm;
 
 // 引入User模型
 const User = require('../../models/User')
-
+const Code = require('../../models/Code')
 // 引入字段验证
 const validateRegisterInput = require('../../validation/register')
 const validateSigninInput = require('../../validation/sign-in')
 const validatePasswordInput = require('../../validation/change-password')
+const validatePhoneInput = require('../../validation/code')
+
+
+function getRandom(){
+    return Math.floor(Math.random()*10000);
+}
+
 
 //测试路由
 router.get('/test', async ctx => {
     ctx.status = 200
     ctx.body = { msg: 'users works...' }
+})
+//获取验证码
+router.post('/code', async ctx => {
+    const { errors, isValid } = validatePhoneInput(ctx.request.body)
+    // 判断是否验证通过
+    if (!isValid) {
+        ctx.status = 400
+        ctx.body = errors
+        return
+    }
+    const phone = ctx.request.body.phone
+    const numCode = getRandom().toString()
+    const queryData = querystring.stringify({
+        "mobile": phone,  // 接受短信的用户手机号码
+        "tpl_id": MSM.signUpID,  // 您申请的短信模板ID，根据实际情况修改
+        "tpl_value": `#app#=geekImage&#code#=${numCode}`,  // 您设置的模板变量，根据实际情况修改
+        "key": MSM.appKey,  // 应用APPKEY(应用详细页查询)
+    });
+    console.log(queryData);
+    const queryUrl = 'http://v.juhe.cn/sms/send?'+queryData;
+    const findResult = await Code.find({phone: phone})
+    if(findResult.length > 0){
+        const codeUpdate = findResult[0];
+        codeUpdate.codeNum = numCode;
+        await Code.findOneAndUpdate(
+            { phone: phone},
+            { $set: codeUpdate },
+            { overwrite: true, new: true }
+        );
+    }else{
+        const newCode = new Code({
+            phone: ctx.request.body.phone,
+            codeNum: numCode
+        })
+        // 存储到数据库
+        await newCode
+            .save()
+            .catch(err => {
+                console.log(err)
+            });        
+    }
+    console.log("存储完毕！！准备发送短信")
+    request(queryUrl,function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            // console.log(body) // 打印接口返回内容
+            
+            var jsonObj = JSON.parse(body); // 解析接口返回的JSON内容
+            // console.log(jsonObj);
+            ctx.status = 200
+            ctx.body = { msg: 'code set success...' }
+        } else {
+            // console.log('请求异常');
+            ctx.status = 403;
+            ctx.body = { msg: '短信发送失败！' }
+            return 
+        }
+    }); 
 })
 
 /*
