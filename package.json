@@ -3,23 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "client-install": "npm install --prefix geek-image-client",
+    "client": "npm start --prefix geek-image-client",
     "start": "node bin/www",
-    "dev": "./node_modules/.bin/nodemon bin/www",
+    "dev": "concurrently \"npm run start\" \"npm run client\"",
     "prd": "pm2 start bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^4.1.0",
+    "crypto": "^1.0.1",
     "debug": "^2.6.3",
+    "gravatar": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
     "koa-convert": "^1.2.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^2.0.1",
     "koa-onerror": "^1.2.1",
+    "koa-passport": "^4.1.1",
     "koa-router": "^7.1.1",
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
-    "pug": "^2.0.0-rc.1"
+    "mongoose": "^5.4.20",
+    "passport-jwt": "^4.0.0",
+    "pug": "^2.0.0-rc.1",
+    "redis": "^2.8.0",
+    "request": "^2.88.0",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "nodemon": "^1.8.1"
