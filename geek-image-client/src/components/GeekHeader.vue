@@ -2,13 +2,13 @@
     <div class="header">
         <div class="header-left">
             <router-link tag="div" to="/" class="logo">极客图床</router-link>
-            <div class="upload nav-word">
+            <div class="upload nav-word" @click="handleToUp">
                 <Icon type="md-cloud-upload"  />上传
             </div>
-            <div class="album nav-word">
+            <div class="album nav-word" @click="handleToAlbum">
                 <Icon type="md-image" />相册
             </div>
-            <div class="manage nav-word">
+            <div class="manage nav-word" @click="handleToAdmin">
                 <Icon type="md-speedometer" />控制台
             </div>
         </div>
@@ -16,7 +16,7 @@
             <div class="signin" @click="loginModal = true" v-if="!login">
                 登录
             </div>
-            <div class="sprit">
+            <div class="sprit" v-if="!login">
                 /
             </div>
             <div class="signup" @click="signupModal = true" v-if="!login">
@@ -26,7 +26,13 @@
                 <Icon type="md-cloud-outline" />七牛云
             </div>
             <div class="logout" v-if="login">
-                <img src="../assets/221.jpg" alt="">
+                <Dropdown @on-click="handleSelectItem">
+                    <img src="../assets/221.jpg" alt="">
+                    <DropdownMenu slot="list">
+                        <DropdownItem name="admin">控制面板</DropdownItem>
+                        <DropdownItem name="logout">退出登录</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>        
             </div>
             <Modal width="360" v-model="loginModal" title="登录">
                 <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
@@ -117,12 +123,15 @@
     </div>
 </template>
 <script>
+import jwt_decode from 'jwt-decode'
 export default {
     name: 'Header',
     data(){
         const validateLoginPass = (rule, value, callback) => {
             if(value === ''){
                 callback(new Error('密码不能为空'));
+            }else if(!(value.length >=8 && value.length <= 16)){
+                callback(new Error('密码长度至少8位，不超过16位'));
             }else{
                 callback();
             }
@@ -146,6 +155,8 @@ export default {
         const validatePass = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('请输入密码'));
+            }else if(!(value.length >=8 && value.length <= 16)){
+                callback(new Error('密码长度至少8位，不超过16位'));
             } else {
                 if (this.formSignup.repeatPassword !== '') {
                     this.$refs.formSignup.validateField('repeatPassword');
@@ -156,6 +167,8 @@ export default {
         const validatePassCheck = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('请重新出入一次密码'));
+            }else if(!(value.length >=8 && value.length <= 16)){
+                callback(new Error('密码长度至少8位，不超过16位'));
             } else if (value !== this.formSignup.password) {
                 callback(new Error('两次密码不一致！'));
             } else {
@@ -164,6 +177,7 @@ export default {
         };
         return {
             login: false,
+            avatar: '',
             loginModal: false,
             signupModal: false,
             formLogin: {
@@ -206,7 +220,26 @@ export default {
         handleLogin(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('Success!');
+                    const loginData = {
+                        phone: this.formLogin.phoneNum,
+                        password: this.formLogin.password
+                    }
+                    this.$axios.post('/api/users/login',loginData)
+                        .then(res =>{
+                            this.$Message.success('登录成功!♪(^∇^*)');
+                            console.log(res);
+                            const { token } = res.data;
+                            localStorage.setItem("geekToken", token);
+                            const decode = jwt_decode(token);
+                            this.$store.commit("setLogin", true);
+                            this.$store.dispatch("setUser", decode);
+                            this.loginModal = false;
+                            this.login = true;
+                            this.$router.push("/");
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
                 } else {
                     this.$Message.error('Fail!');
                 }
@@ -215,9 +248,25 @@ export default {
         handleSignup(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('Success!');
+                    const postData = {
+                        phone: this.formSignup.phoneNum,
+                        code: this.formSignup.checkCode,
+                        password: this.formSignup.password,
+                        repeatPassword: this.formSignup.repeatPassword
+                    }
+                    this.$axios.post('/api/users/register',postData)
+                        .then(() => {
+                            this.$Notice.success({
+                                title: '注册成功！φ(≧ω≦*)♪',
+                                desc: '请前往登录页面~~~~'
+                            });
+                            this.signupModal = false;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
                 } else {
-                    this.$Message.error('Fail!');
+                    this.$Message.error('输入错误，请重新尝试!');
                 }
             })
         },
@@ -225,15 +274,13 @@ export default {
         if (this.validatePhone()) {
             this.validateBtn();
             // 发送网络请求
-            // this.$axios
-            // .post("/api/posts/sms_send", {
-            //     tpl_id: "136729",
-            //     key: "795be723dd9e88c3ea98e2b6713ab795",
-            //     phone: this.phone
-            // })
-            // .then(res => {
-            //     console.log(res);
-            // });
+            this.$axios
+            .post("/api/users/code", {
+                phone: this.formSignup.phoneNum
+            })
+            .then(res => {
+                console.log(res);
+            });
         }
         },
         validateBtn() {
@@ -261,7 +308,33 @@ export default {
                 return false;
             }
             return true;
+        },
+        handleToUp(){
+            this.$router.push('/');
+        },
+        handleToAlbum(){
+            this.$router.push('/album');
+        },
+        handleToAdmin(){
+            this.$router.push('/admin');
+        },
+        handleSelectItem(name){
+            if(name === 'logout'){
+                console.log('work!');
+                this.$Message.success('下次再来哦!♪(^∇^*)');
+                localStorage.removeItem("geekToken");
+                this.$store.commit("setLogin", false);
+                this.login = false;
+                this.$router.push("/");     
+            }
+            if(name == 'admin'){
+                this.handleToAdmin();
+            }
         }
+    },
+    created(){
+        this.login = this.$store.state.isLogin;
+        this.avatar = this.$store.state.user.avatar;
     }
 }
 </script>

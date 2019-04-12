@@ -15,7 +15,7 @@ const User = require('../../models/User')
 const Code = require('../../models/Code')
 // 引入字段验证
 const validateRegisterInput = require('../../validation/register')
-const validateSigninInput = require('../../validation/sign-in')
+const validateSigninInput = require('../../validation/login')
 const validatePasswordInput = require('../../validation/change-password')
 const validatePhoneInput = require('../../validation/code')
 
@@ -94,6 +94,7 @@ router.post('/code', async ctx => {
  */
 router.post('/register', async ctx => {
     const { errors, isValid } = validateRegisterInput(ctx.request.body)
+    console.log(errors);
     // 判断是否验证通过
     if (!isValid) {
         ctx.status = 400
@@ -101,12 +102,13 @@ router.post('/register', async ctx => {
         return
     }
     // 存储到数据库
-    const findResult = await User.find({ email: ctx.request.body.phone });
-    if (findResult.length > 0) {
+    const findUser = await User.find({ email: ctx.request.body.phone })
+    const findCode = await Code.find({ phone: ctx.request.body.phone})
+    if (findUser.length > 0) {
         ctx.status = 400
         ctx.body = { phone: '电话号码已被占用' }
-    } else {
-        const avatar_string = ctx.request.body.email + 'gmail.com'
+    } else if(findCode.length > 0 && findCode[0].codeNum === ctx.request.body.code){
+        const avatar_string = ctx.request.body.phone + 'gmail.com'
         const avatar = gravatar.url(avatar_string, {
             s: '200',
             r: 'pg',
@@ -128,14 +130,18 @@ router.post('/register', async ctx => {
 
         // 返回json数据
         ctx.body = { message: '注册成功！' }
+    }else{
+        ctx.status = 400
+        ctx.body = {message: '无法通过验证，请重新尝试！'}
+        return
     }
 });
 
 /*
-@router POST  api/users/signin
+@router POST  api/users/login
 @desc 返回Token
  */
-router.post('/signin', async ctx => {
+router.post('/login', async ctx => {
     const { errors, isValid } = validateSigninInput(ctx.request.body);
     if (!isValid) {
         ctx.status = 400;
@@ -163,7 +169,7 @@ router.post('/signin', async ctx => {
                 avatar: user.avatar,
                 phone: user.phone
             };
-            const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600 });
+            const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24 });
             // console.log('Token设置成功')
             ctx.status = 200;
             ctx.body = { success: true, token: 'Bearer ' + token };

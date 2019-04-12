@@ -11,7 +11,25 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: 'album',
+          name: 'album',
+          component: () => import('./views/Album.vue'),
+          meta:  {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'admin',
+          name: 'admin',
+          component: () => import('./views/CloudAdmin.vue'),
+          meta:  {
+            requiresAuth: true
+          }
+        }
+      ]
     }
   ]
 })

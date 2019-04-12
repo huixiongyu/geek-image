@@ -39,7 +39,9 @@ module.exports = {
 
 ## 参考链接
 
-* [教你如何用node连接redis](https://juejin.im/post/5ad208b451882555894a3ff2)
+* [教你如何用node连接redis](https://juejin.im/post/5ad208b451882555894a3ff2) 
+* [Vue登录注册，并保持登录状态](https://blog.csdn.net/sinat_17775997/article/details/83450620)
+* [页面刷新保持登录状态](https://juejin.im/post/5aa7d945518825558453ad8c)
 
 
 
@@ -72,3 +74,10 @@ npm install redis --save
 
 ```
 
+* Linux使用redis
+
+```
+firewall-cmd --zone=public --add-port=6379/tcp --permanent 
+```
+
+* 
