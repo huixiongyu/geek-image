@@ -30,6 +30,8 @@ module.exports = {
 
 * [vue2-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation) 图片上传组件
   * [options](https://www.dropzonejs.com/#configuration-options) 
+  * [drop中文版](http://wxb.github.io/dropzonejs.com.zh-CN/dropzonezh-CN/#installation) 
+  * [dropzone的使用方法](https://blog.csdn.net/zyx1303031629/article/details/77449305) 
 * [redis](https://github.com/MicrosoftArchive/redis/releases)
 * [urlencode](https://www.npmjs.com/package/urlencode) 转换特殊字符，中文、日语等
 

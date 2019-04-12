@@ -1,35 +1,28 @@
 <template>
     <div class="home">
         <div class="upload-zone">
-            <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" :useCustomSlot=true>
-                <div class="dropzone-custom-content">
-                    <p>
-                        <Icon type="md-cloud-done" />点击或者拖拽上传图片
-                    </p>
+            <Upload
+                multiple
+                type="drag"
+                action="//jsonplaceholder.typicode.com/posts/">
+                <div class="upload-tips" style="padding: 40px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                    <p>Click or drag files here to upload</p>
                 </div>
-            </vue-dropzone>
+            </Upload>
             <Button class="upload-btn" type="success">开始上传</Button>
         </div>
         
     </div>
 </template>
 <script>
-import vue2Dropzone from 'vue2-dropzone'
-import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 export default {
     name: 'home',
     components: {
-    vueDropzone: vue2Dropzone
     },
      data: function () {
     return {
-      dropzoneOptions: {
-          url: 'https://httpbin.org/post',
-          thumbnailWidth: 150,
-          addRemoveLinks: true,
-          maxFilesize: 5,
-          headers: { "My-Awesome-Header": "header value" }
-      }
+
     }
   }
 }
@@ -50,20 +43,20 @@ export default {
         min-height: 600px;
         margin-left: -500px;
         padding-bottom: 200px;
-    }
-    #dropzone{
-        position: relative;
-        width: 100%;
-        min-height: 400px;
-    }
-    .dropzone-custom-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        font-size: 24px;
-
+        .ivu-upload{
+            position: relative;
+            width: 100%;
+            height: 400px;
+            .upload-tips{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 300px;
+                height: 200px;
+                margin-top: -100px;
+                margin-left: -150px;
+            }
+        }
     }
     .upload-btn{
         float: right;
