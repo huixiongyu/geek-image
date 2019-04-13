@@ -10,7 +10,9 @@ export default {
 </script>
 <style lang="less">
     .admin{
+        position: relative;
         width: 100%;
         min-height: 650px;
+         background-color: #EEFFFF;
     }
 </style>

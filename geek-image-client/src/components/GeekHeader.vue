@@ -3,13 +3,13 @@
         <div class="header-left">
             <router-link tag="div" to="/" class="logo">极客图床</router-link>
             <div class="upload nav-word" @click="handleToUp">
-                <Icon type="md-cloud-upload"  />上传
+                <i class="iconfont">&#xe62e;</i>上传
             </div>
-            <div class="album nav-word" @click="handleToAlbum">
-                <Icon type="md-image" />相册
+            <div class="nav-album nav-word" @click="handleToAlbum">
+                <i class="iconfont">&#xe646;</i>相册
             </div>
             <div class="manage nav-word" @click="handleToAdmin">
-                <Icon type="md-speedometer" />控制台
+                <i class="iconfont">&#xe600;</i>控制台
             </div>
         </div>
         <div class="header-right">
@@ -23,7 +23,7 @@
                 注册
             </div>
             <div class="cloud" v-if="login">
-                <Icon type="md-cloud-outline" />七牛云
+                <i class="iconfont">&#xe66c;</i>七牛云
             </div>
             <div class="logout" v-if="login">
                 <Dropdown @on-click="handleSelectItem">

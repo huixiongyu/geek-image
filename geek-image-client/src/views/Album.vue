@@ -5,20 +5,14 @@
 </template>
 <script>
 export default {
-    name: 'album',
-    data(){
-        return {
-
-        }
-    },
-    created(){
-        console.log('album!!');
-    }
+    name: 'album'
 }
 </script>
 <style lang="less">
     .album{
+        position: relative;
         width: 100%;
         min-height: 650px;
+        background-color: #EEFFFF;
     }
 </style>

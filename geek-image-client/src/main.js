@@ -5,6 +5,7 @@ import store from './store'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import axios from 'axios'
+import './assets/iconfont/iconfont.css'
 
 axios.interceptors.request.use(
   config => {

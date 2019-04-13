@@ -2,17 +2,20 @@
     <div class="home">
         <div class="upload-zone">
             <Upload
+                ref="upload"
                 multiple
                 type="drag"
-                action="//jsonplaceholder.typicode.com/posts/">
+                :show-upload-list="true"
+                :format="['jpg','jpeg','png','gif']"
+                :max-size="5120"
+                :on-success="handleSuccess"
+                action="/api/upload/">
                 <div class="upload-tips" style="padding: 40px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                     <p>Click or drag files here to upload</p>
                 </div>
             </Upload>
-            <Button class="upload-btn" type="success">开始上传</Button>
         </div>
-        
     </div>
 </template>
 <script>
@@ -21,10 +24,19 @@ export default {
     components: {
     },
      data: function () {
-    return {
-
+        return {
+            uploadList: [],
+            imgName: ''
+        }
+    },
+    methods: {
+        handleSuccess(){
+            
+        }
+    },
+    mounted () {
+        this.uploadList = this.$refs.upload.fileList;
     }
-  }
 }
 </script>
 

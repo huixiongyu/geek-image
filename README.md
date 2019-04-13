@@ -34,6 +34,12 @@ module.exports = {
   * [dropzone的使用方法](https://blog.csdn.net/zyx1303031629/article/details/77449305) 
 * [redis](https://github.com/MicrosoftArchive/redis/releases)
 * [urlencode](https://www.npmjs.com/package/urlencode) 转换特殊字符，中文、日语等
+* iview-Upload
+  * before-upload：上传文件这前的事件钩子，若返回 false 或者 Promise 则停止自动上传
+  * on-success: 上传文件成功后的事件钩子，返回 res(接口方返回的信息), file(上传文件), fileList(上传文件List)
+* [koa-multer](https://www.npmjs.com/package/koa-multer)
+* 七牛上传相关
+  * [Koa2实现上传图片，并且同步上传到七牛云存储](https://segmentfault.com/a/1190000010398718)
 
 **VScode、Postman、mlab**
 
@@ -43,7 +49,13 @@ module.exports = {
 
 * [教你如何用node连接redis](https://juejin.im/post/5ad208b451882555894a3ff2) 
 * [Vue登录注册，并保持登录状态](https://blog.csdn.net/sinat_17775997/article/details/83450620)
-* [页面刷新保持登录状态](https://juejin.im/post/5aa7d945518825558453ad8c)
+* [页面刷新保持登录状态](https://juejin.im/post/5aa7d945518825558453ad8c) 
+* [antDesign 图片上传](https://ant.design/components/upload-cn/)
+* [iviw+axios实现图片预览及单请求批量上传](https://hayuq.com/blog/articles/189.shtml)
+* [使用JSON Server](构建数据接口) 
+* [Koa2之文件上下传](https://juejin.im/post/5abc451ff265da23a2292dd4) 
+* [koa2下使用koa-multer上传文件](https://www.jianshu.com/p/f9062b969a6e)
+* [异步上传图片](https://chenshenhai.github.io/koa2-note/note/upload/pic-async.html)
 
 
 
@@ -63,7 +75,14 @@ module.exports = {
 ## 接口
 
 *  user
-* msm
+*  msm
+*  upload
+
+```
+curl http://localhost:3000/api/upload -F "file=@xxx.png"
+```
+
+
 
 
 
