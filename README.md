@@ -37,9 +37,19 @@ module.exports = {
 * iview-Upload
   * before-upload：上传文件这前的事件钩子，若返回 false 或者 Promise 则停止自动上传
   * on-success: 上传文件成功后的事件钩子，返回 res(接口方返回的信息), file(上传文件), fileList(上传文件List)
+  * [iView Upload实现手动上传](https://juejin.im/post/5aa92b32f265da2392360cb5)
 * [koa-multer](https://www.npmjs.com/package/koa-multer)
 * 七牛上传相关
   * [Koa2实现上传图片，并且同步上传到七牛云存储](https://segmentfault.com/a/1190000010398718)
+  * [图床on七牛](https://cjting.me/web2.0/build-an-img-bed-on-qiniu/) 和对应的插件[源代码](https://github.com/fate-lovely/pic-on-qiniu/blob/master/qiniu.js)
+  * [plupload](https://www.npmjs.com/package/plupload) JS-JDK需要依赖的 `npm install plupload`
+  * [JavaScript SDK](https://developer.qiniu.com/kodo/sdk/1283/javascript) 客户端上传的依赖  `npm install qiniu-js`
+  * [带你玩转七牛云存储——高级篇](https://cloud.tencent.com/developer/article/1156622)
+  * [存储区域](https://developer.qiniu.com/kodo/manual/1671/region-endpoint) 根据bucket的不同地区会有不同的客户端上传地址
+  * [魔法变量](https://developer.qiniu.com/kodo/manual/1235/vars)
+* [moment ](http://momentjs.cn/docs/#/displaying/) 格式化时间
+
+
 
 **VScode、Postman、mlab**
 
@@ -55,7 +65,8 @@ module.exports = {
 * [使用JSON Server](构建数据接口) 
 * [Koa2之文件上下传](https://juejin.im/post/5abc451ff265da23a2292dd4) 
 * [koa2下使用koa-multer上传文件](https://www.jianshu.com/p/f9062b969a6e)
-* [异步上传图片](https://chenshenhai.github.io/koa2-note/note/upload/pic-async.html)
+* [异步上传图片](https://chenshenhai.github.io/koa2-note/note/upload/pic-async.html) 
+* [使用$refs访问Vue中的DOM](https://www.w3cplus.com/vue/accessing-dom-refs.html)
 
 
 
@@ -75,11 +86,24 @@ module.exports = {
 ## 接口
 
 *  user
-*  msm
+   *  获取验证码 POST  /api/users/code
+      *  phone  接收验证码的手机号
+   *  注册账户 POST  /api/users/register
+      *  phone 手机号
+      *  code 验证码
+      *  password 密码
+   *  登录账号 POST /api/users/login
+      *  phone  手机号
+      *  password 密码
 *  upload
+   *  上传图片到服务器的文件夹 POST  /api/upload/
 
 ```
 curl http://localhost:3000/api/upload -F "file=@xxx.png"
+
+mounted () {
+	this.uploadList = this.$refs.upload.fileList;
+}
 ```
 
 
@@ -101,4 +125,15 @@ npm install redis --save
 firewall-cmd --zone=public --add-port=6379/tcp --permanent 
 ```
 
-* 
+* 通过v-for设定不同的ref需要使用绑定。不过$refs一般用来获取DOM的内容，不建议通过它来操作DOM，既然用了v-for，那么也能够从v-for中获取内容来替代。
+* 使用七牛上传文件
+  * 上传过程：
+    * 根据AccessKey + SecretKey + bucket生成token，这个token从服务器返回给前端
+    * 前端构建上传请求，上传文件到七牛云存储服务器
+    * 七牛云存储服务器返回客户端文件上传的结果。
+  * 踩坑指南：
+    * js-sdk和plupload的版本对应问题
+    * 前端生成Key是大写的
+
+
+

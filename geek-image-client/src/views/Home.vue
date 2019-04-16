@@ -2,14 +2,19 @@
     <div class="home">
         <div class="upload-zone">
             <Upload
+                action="http://upload-z2.qiniup.com"
                 ref="upload"
+                :format="['jpg','jpeg','png','gif']"
                 multiple
                 type="drag"
-                :show-upload-list="true"
-                :format="['jpg','jpeg','png','gif']"
                 :max-size="5120"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                :before-upload="beforeUpload"
+                :data="uploadForm"
+                :on-progress="handleProgress"
                 :on-success="handleSuccess"
-                action="/api/upload/">
+                >
                 <div class="upload-tips" style="padding: 40px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                     <p>Click or drag files here to upload</p>
@@ -26,12 +31,34 @@ export default {
      data: function () {
         return {
             uploadList: [],
+            uploadForm: {},
             imgName: ''
         }
     },
     methods: {
-        handleSuccess(){
-            
+        handleFormatError (file) {
+            this.$Notice.warning({
+                title: '文件格式不正确',
+                desc: '您上传的问件' + file.name + '格式不符合要求',
+                duration: 6
+            })
+        },
+        handleMaxSize (file) {
+            this.$Notice.warning({
+                title: '文件过大',
+                desc: '您上传的问件' + file.name + '体积过大，请上传不超过5M的文件',
+                duration: 6
+            })
+        },
+        beforeUpload () {
+            return true;
+        },
+        handleProgress () {
+//                console.log(parseInt(event.percent));
+        },
+        handleSuccess (res) {
+            this.$Message.success('上传成功');
+            this.img = res.key;
         }
     },
     mounted () {

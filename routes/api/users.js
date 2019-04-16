@@ -102,7 +102,7 @@ router.post('/register', async ctx => {
         return
     }
     // 存储到数据库
-    const findUser = await User.find({ email: ctx.request.body.phone })
+    const findUser = await User.find({ phone: ctx.request.body.phone })
     const findCode = await Code.find({ phone: ctx.request.body.phone})
     if (findUser.length > 0) {
         ctx.status = 400
