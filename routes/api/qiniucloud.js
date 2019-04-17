@@ -8,10 +8,6 @@ var accessKey = cloudKey.AK;
 var secretKey = cloudKey.SK;
 //要上传的空间
 const bucket = cloudKey.bucket;
-var config = new qiniu.conf.Config();
-config.zone = qiniu.zone.Zone_z2;
-
-var localFile =  '../../public/uploads/1555510429588.jpg'
 
 var options = {
     scope: bucket,
@@ -23,33 +19,25 @@ var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 var putPolicy = new qiniu.rs.PutPolicy(options);
 var uploadToken=putPolicy.uploadToken(mac);
 
-var formUploader = new qiniu.form_up.FormUploader(config);
-var putExtra = new qiniu.form_up.PutExtra();
-var key='test.jpg';
-
-// 文件上传
-formUploader.putFile(uploadToken, key, localFile, putExtra, function(respErr,
-  respBody, respInfo) {
-  if (respErr) {
-    throw respErr;
-  }
-  if (respInfo.statusCode == 200) {
-    console.log(respBody);
-  } else {
-    console.log(respInfo.statusCode);
-    console.log(respBody);
-  }
-});
+function renderUniFileName() {
+  const newDate = new Date(Date.now());
+  const year = newDate.getFullYear();
+  const month = newDate.getMonth() + 1;
+  const date = newDate.getDate();
+  const randomNum = Math.floor(Math.random() * 99999999);
+  return `${year}-${month}-${date}/${randomNum}.jpg`
+}
 
 
-
-
-
-
-router.get('/', passport.authenticate('jwt', { session: false }),
+router.post('/', passport.authenticate('jwt', { session: false }),
     async ctx => {
-      await uploadFile(token, key, filePath);
-      ctx.body = {message: '上传成功！'};
+      console.log(ctx);
+      let key = renderUniFileName();
+      console.log(key);
+      ctx.body = {
+        token: uploadToken,
+        key: key
+        };
     }
 );
 

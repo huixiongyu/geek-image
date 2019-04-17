@@ -2,7 +2,7 @@
     <div class="home">
         <div class="upload-zone">
             <Upload
-                action="/api/upload/"
+                action="http://upload-z2.qiniup.com"
                 ref="upload"
                 :format="['jpg','jpeg','png','gif']"
                 multiple
@@ -50,8 +50,15 @@ export default {
                 duration: 6
             })
         },
-        beforeUpload () {
-            return true;
+        beforeUpload (file) {
+            console.log(file.name);
+            return this.$axios.post('/api/qiniu/')
+                    .then(res => {
+                        this.uploadForm = {
+                            token: res.data.token,
+                            key: res.data.key
+                        }
+                    })
         },
         handleProgress () {
 //                console.log(parseInt(event.percent));
