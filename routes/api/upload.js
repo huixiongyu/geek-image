@@ -9,8 +9,11 @@ var storage = multer.diskStorage({
         cb(null, 'public/uploads/')  //注意路径必须存在
     },    //修改文件名称
     filename(ctx,file,cb){
+        console.log(file.originalname);
         const filenameArr = file.originalname.split('.');
-        cb(null,Date.now() + '.' + filenameArr[filenameArr.length-1]);
+        console.log(filenameArr);
+        const fileName = Date.now() + '.' + filenameArr[filenameArr.length-1];
+        cb(null, fileName);
       }
 })
 //加载配置
@@ -22,6 +25,7 @@ var upload = multer({
 });
 
 router.post('/', upload.single('file'), async (ctx, next) => {
+    console.log(ctx.req.file.filename);
     ctx.body = {
         filename: ctx.req.file.filename//返回文件名
     }

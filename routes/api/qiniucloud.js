@@ -1,37 +1,29 @@
 const Router = require('koa-router')
 const router = new Router()
 var qiniu = require("qiniu");
+const passport = require('koa-passport')
 const cloudKey = require('../../config/keys').cloudKey
-
-
+var qiniu = require("qiniu");
 //需要填写你的 Access Key 和 Secret Key
-qiniu.conf.ACCESS_KEY = cloudKey.AK;
-qiniu.conf.SECRET_KEY = cloudKey.SK;
+qiniu.conf.ACCESS_KEY = cloudKey.accessKey;
+qiniu.conf.SECRET_KEY = cloudKey.secretKey;
 //要上传的空间
 const bucket = cloudKey.bucket;
 
+const key = 'my-nodejs-logo.png';
 
-function uptoken(bucket, key) {
-  var putPolicy = new qiniu.rs.PutPolicy(bucket+":"+key);
-  return putPolicy.token();
-}
-//生成上传 Token
-const token = uptoken(bucket, key);
-//要上传文件的本地路径
-filePath = './ruby-logo.png'
-//构造上传函数
-function uploadFile(uptoken, key, localFile) {
-  var extra = new qiniu.io.PutExtra();
-    qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
-      if(!err) {
-        // 上传成功， 处理返回值
-        console.log(ret.hash, ret.key, ret.persistentId);       
-      } else {
-        // 上传失败， 处理返回代码
-        console.log(err);
-      }
-  });
-}
-//调用uploadFile上传
-uploadFile(token, key, filePath);             
 
+filePath = '../../public/uploads/1555510429588.jpg'
+
+
+
+
+router.get('/', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+      await uploadFile(token, key, filePath);
+      ctx.body = {message: '上传成功！'};
+    }
+);
+
+
+module.exports = router.routes();

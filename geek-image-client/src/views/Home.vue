@@ -2,7 +2,7 @@
     <div class="home">
         <div class="upload-zone">
             <Upload
-                action="http://upload-z2.qiniup.com"
+                action="/api/upload/"
                 ref="upload"
                 :format="['jpg','jpeg','png','gif']"
                 multiple
@@ -52,6 +52,10 @@ export default {
         },
         beforeUpload () {
             return true;
+            // return this.$axios.get('/api/qiniu/')
+            //     .then(res => {
+            //         console.log(res.data);
+            //     })
         },
         handleProgress () {
 //                console.log(parseInt(event.percent));

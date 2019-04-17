@@ -45,8 +45,10 @@ module.exports = {
   * [plupload](https://www.npmjs.com/package/plupload) JS-JDK需要依赖的 `npm install plupload`
   * [JavaScript SDK](https://developer.qiniu.com/kodo/sdk/1283/javascript) 客户端上传的依赖  `npm install qiniu-js`
   * [带你玩转七牛云存储——高级篇](https://cloud.tencent.com/developer/article/1156622)
-  * [存储区域](https://developer.qiniu.com/kodo/manual/1671/region-endpoint) 根据bucket的不同地区会有不同的客户端上传地址
+  * [存储区域](https://developer.qiniu.com/kodo/manual/1671/region-endpoint) 根据bucket的不同地区会有不同的客户端上传地址，临近该数据中心访问更快
   * [魔法变量](https://developer.qiniu.com/kodo/manual/1235/vars)
+  * [自定义响应内容](https://developer.qiniu.com/kodo/manual/1654/response-body#returnbody)
+  * [七牛云上传测速](http://jssdk.demo.qiniu.io/performance)
 * [moment ](http://momentjs.cn/docs/#/displaying/) 格式化时间
 
 
@@ -134,6 +136,10 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
   * 踩坑指南：
     * js-sdk和plupload的版本对应问题
     * 前端生成Key是大写的
+    * 上传凭证的有效期：因为时间戳的创建和验证在不同的服务端进行（在业务服务器创建，在云存储服务器验证），因此开发者的业务服务器需要尽可能校准时间，否则可能出现凭证刚创建就过期等各种奇怪的问题。
+    * saveKey自定义资源名，如果客户端已指定Key, 以Key命名
+    * 如果只有 callbackUrl 而没有 callbackBody，回调服务器收到的请求内容将为空
+    * [Node.js SDK](https://developer.qiniu.com/kodo/sdk/1289/nodejs) 这个是新的qiniu npm开发文档，官网的Node.js SDK V6反而是旧的文档
 
-
+![](http://qiniu.hackslog.cn/Snipaste_2019-04-17_16-33-14.png)
 

@@ -94,7 +94,7 @@ router.post('/code', async ctx => {
  */
 router.post('/register', async ctx => {
     const { errors, isValid } = validateRegisterInput(ctx.request.body)
-    console.log(errors);
+    // console.log(errors);
     // 判断是否验证通过
     if (!isValid) {
         ctx.status = 400
@@ -153,7 +153,8 @@ router.post('/login', async ctx => {
     const findResult = await User.find({ phone: ctx.request.body.phone });
     const user = findResult[0];
     const password = ctx.request.body.password;
-
+    console.log(password);
+    console.log(ctx.request.body.phone);
     // 判断查没查到
     if (findResult.length === 0) {
         ctx.status = 404;
@@ -171,8 +172,10 @@ router.post('/login', async ctx => {
             };
             const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24 });
             // console.log('Token设置成功')
-            ctx.status = 200;
+            console.log('验证完！')
+            console.log(token);
             ctx.body = { success: true, token: 'Bearer ' + token };
+            ctx.status = 200;
         } else {
             ctx.status = 400;
             ctx.body = { password: '密码错误!' };
