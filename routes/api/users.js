@@ -153,8 +153,8 @@ router.post('/login', async ctx => {
     const findResult = await User.find({ phone: ctx.request.body.phone });
     const user = findResult[0];
     const password = ctx.request.body.password;
-    console.log(password);
-    console.log(ctx.request.body.phone);
+    // console.log(password);
+    // console.log(ctx.request.body.phone);
     // 判断查没查到
     if (findResult.length === 0) {
         ctx.status = 404;
@@ -172,8 +172,8 @@ router.post('/login', async ctx => {
             };
             const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24 });
             // console.log('Token设置成功')
-            console.log('验证完！')
-            console.log(token);
+            // console.log('验证完！')
+            // console.log(token);
             ctx.body = { success: true, token: 'Bearer ' + token };
             ctx.status = 200;
         } else {

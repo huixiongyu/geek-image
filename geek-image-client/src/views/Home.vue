@@ -52,10 +52,6 @@ export default {
         },
         beforeUpload () {
             return true;
-            // return this.$axios.get('/api/qiniu/')
-            //     .then(res => {
-            //         console.log(res.data);
-            //     })
         },
         handleProgress () {
 //                console.log(parseInt(event.percent));

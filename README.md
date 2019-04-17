@@ -49,6 +49,7 @@ module.exports = {
   * [魔法变量](https://developer.qiniu.com/kodo/manual/1235/vars)
   * [自定义响应内容](https://developer.qiniu.com/kodo/manual/1654/response-body#returnbody)
   * [七牛云上传测速](http://jssdk.demo.qiniu.io/performance)
+  * [上传401报错码](https://developer.qiniu.com/kodo/kb/1330/upload-error-code-401) 
 * [moment ](http://momentjs.cn/docs/#/displaying/) 格式化时间
 
 
