@@ -5,6 +5,10 @@ const ImageSchema = new Schema({
     name: {
         type: String
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+    },
     originURL: {
         type: String,
         required: true
@@ -13,17 +17,6 @@ const ImageSchema = new Schema({
         type: String,
         required: true
     },
-    album: [
-      {
-          name: {
-              type: String
-          },
-          date: {
-              type: Date,
-              default: Date.now
-          }
-      }  
-    ],
     date: {
         type: Date,
         default: Date.now

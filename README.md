@@ -51,8 +51,7 @@ module.exports = {
   * [七牛云上传测速](http://jssdk.demo.qiniu.io/performance)
   * [上传401报错码](https://developer.qiniu.com/kodo/kb/1330/upload-error-code-401) 
 * [moment ](http://momentjs.cn/docs/#/displaying/) 格式化时间
-
-
+* [vue-clipboard2](https://www.npmjs.com/package/vue-clipboard2) 将内容复制到剪贴板
 
 **VScode、Postman、mlab**
 
@@ -109,7 +108,10 @@ mounted () {
 }
 ```
 
-
+* qiniu 
+  * 上传文件  POST /api/qiniu/
+    * filename 文件名
+    * phone 用户手机号
 
 
 
@@ -144,3 +146,12 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
 
 ![](http://qiniu.hackslog.cn/Snipaste_2019-04-17_16-33-14.png)
 
+* 为了方便复制了代码，忘记了修改Schema导致的报错：` OverwriteModelError: Cannot overwrite `users` model once compiled.`
+
+
+
+
+
+
+
+![image](http://qiniu.hackslog.cn/2019-04-18/510067945.jpg)

@@ -124,29 +124,29 @@
                 v-model="qiniuModal"
                 class-name="vertical-center-modal">
                 <Form class="qiniu-form" ref="qiniuForm" :model="qiniuInfo" :rules="rulesQiniu" :label-width="100">
-                    <FormItem label="accessKey"  prop="accessKey">
+                    <FormItem label="accessKey">
                         <Input type="text" v-model="qiniuInfo.accessKey" placeholder="AccessKey" />
                     </FormItem>
-                    <FormItem label="secretKey" prop="secretKey">
+                    <FormItem label="secretKey">
                         <Input type="password" v-model="qiniuInfo.secretKey" placeholder="SecretKey" />
                     </FormItem>
-                    <FormItem label="存储空间名"  prop="bucket">
+                    <FormItem label="存储空间名">
                         <Input type="text" v-model="qiniuInfo.bucket" placeholder="Bucket"/>
                     </FormItem>
                     <FormItem label="存储区域">
                         <RadioGroup v-model="qiniuInfo.zone">
-                            <Radio label="华东"></Radio>
-                            <Radio label="华北"></Radio>
-                            <Radio label="华南"></Radio>
-                            <Radio label="北美"></Radio>     
-                            <Radio label="东南亚"></Radio>                          
+                            <Radio label="z0"><span>华东</span></Radio>
+                            <Radio label="z1"><span>华北</span></Radio>
+                            <Radio label="z2"><span>华南</span></Radio>
+                            <Radio label="na0"><span>北美</span></Radio>     
+                            <Radio label="as0"><span>东南亚</span></Radio>                          
                         </RadioGroup>
                     </FormItem>
                     <FormItem label="绑定域名"  prop="url">
                         <Input type="text" v-model="qiniuInfo.url" placeholder="http://qiniu.hackslog.cn" />
                     </FormItem>
                 </Form>
-                <Button class="qiniu-modal-btn" type="primary" slot="footer">确认修改</Button>
+                <Button class="qiniu-modal-btn" @click="submitMotify" type="primary" slot="footer">确认修改</Button>
             </Modal>     
         </div>
     </div>
@@ -252,10 +252,7 @@ export default {
                 url: ''
             },
             rulesQiniu: {
-                accessKey: [],
-                secretKey: [],
-                bucket: [],
-                url: ''
+                url: [{ required: true, type:'url', message: '绑定域名不符合规范'}]
             }
         }
     },
@@ -275,7 +272,7 @@ export default {
                             localStorage.setItem("geekToken", token);
                             const decode = jwt_decode(token);
                             this.$store.commit("setLogin", true);
-                            this.$store.dispatch("setUser", decode);
+                            this.$store.commit("userInfo", decode);
                             this.loginModal = false;
                             this.login = true;
                             this.$router.push("/");
@@ -373,6 +370,25 @@ export default {
             if(name == 'admin'){
                 this.handleToAdmin();
             }
+        },
+        submitMotify(){
+            const postData = {
+                accessKey: this.qiniuInfo.accessKey,
+                secretKey: this.qiniuInfo.secretKey,
+                bucketName: this.qiniuInfo.bucket,
+                zone: this.qiniuInfo.zone,
+                bindURL: this.qiniuInfo.url,
+                phone: this.$store.state.user.phone
+            }
+            this.$axios.post('/api/qiniu/config', postData)
+                .then(res => {
+                    console.log(res);
+                    this.$Message.success('配置信息保存成功！');
+                    this.qiniuModal = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
         }
     },
     created(){

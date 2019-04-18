@@ -8,11 +8,12 @@ const jwt = require('jsonwebtoken')
 const passport = require('koa-passport')
 const secretOrKey = require('../../config/keys').secretOrKey
 const tools = require('../../config/tools')
-const MSM = require('../../config/keys').msm;
+const MSM = require('../../config/keys').msm
 
 // 引入User模型
 const User = require('../../models/User')
 const Code = require('../../models/Code')
+const Album = require('../../models/Album')
 // 引入字段验证
 const validateRegisterInput = require('../../validation/register')
 const validateSigninInput = require('../../validation/login')
@@ -127,7 +128,15 @@ router.post('/register', async ctx => {
                 console.log(err)
             });
         console.log(`账户：${newUser.phone}创建成功！`)
-
+        const findUser = await User.find({phone: ctx.request.body.phone})
+        const newAlbum = new Album({
+            name: '默认相册',
+            user: findUser[0].id,
+            selected: true
+        })
+        await newAlbum.save().catch(err => {
+            console.log(err)
+        });
         // 返回json数据
         ctx.body = { message: '注册成功！' }
     }else{

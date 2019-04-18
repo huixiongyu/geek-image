@@ -6,6 +6,8 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import axios from 'axios'
 import './assets/iconfont/iconfont.css'
+import VueClipboard from 'vue-clipboard2'
+ 
 
 axios.interceptors.request.use(
   config => {
@@ -20,7 +22,7 @@ axios.interceptors.request.use(
 );
 
 Vue.use(iView)
-
+Vue.use(VueClipboard)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
 

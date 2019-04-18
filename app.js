@@ -17,7 +17,7 @@ const db = require('./config/keys').mongoURI;
 const users = require('./routes/api/users');
 const upload = require('./routes/api/upload');
 const qiniu = require('./routes/api/qiniucloud');
-
+const album = require('./routes/api/album');
 // error handler
 onerror(app);
 
@@ -64,8 +64,8 @@ require('./config/passport')(passport);
 // 配置路由接口
 router.use('/api/users', users);
 router.use('/api/upload', upload);
-router.use('/api/qiniu/', qiniu);
-
+router.use('/api/qiniu', qiniu);
+router.use('/api/album', album);
 // router.use('/api/code', code);
 
 app.use(router.routes()).use(router.allowedMethods());
