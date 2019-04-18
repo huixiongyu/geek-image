@@ -5,6 +5,7 @@ import store from './store'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 import './assets/iconfont/iconfont.css'
 import VueClipboard from 'vue-clipboard2'
  
@@ -29,6 +30,9 @@ Vue.prototype.$axios = axios;
 router.beforeEach((to, from, next) => {
   if(localStorage.getItem("geekToken")){
     store.commit("setLogin", true);
+    const token = localStorage.getItem("geekToken");
+    const decode = jwt_decode(token);
+    store.commit("userInfo", decode);
   }
   if(to.meta.requiresAuth){
     if(store.state.isLogin){

@@ -2,7 +2,7 @@
     <div class="home">
         <div class="upload-zone">
             <Upload
-                action="http://upload-z2.qiniup.com"
+                :action="actionAddress"
                 ref="upload"
                 :format="['jpg','jpeg','png','gif']"
                 multiple
@@ -16,7 +16,7 @@
                 >
                 <div class="upload-tips" style="padding: 40px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                    <p>Click or drag files here to upload</p>
+                    <p class="tips-word">点击或者拖拽文件进行上传</p>
                 </div>
             </Upload>
         </div>
@@ -47,12 +47,22 @@ export default {
     },
      data: function () {
         return {
-            uploadList: [],
             uploadForm: {},
-            imageList: []
+            imageList: [],
+            actionAddress: 'http://upload-z2.qiniup.com'
         }
     },
     methods: {
+        getAddress(){
+            // console.log(this.$store.state.user.phone);
+            this.$axios.get(`/api/qiniu/config?phone=${this.$store.state.user.phone}`)
+                .then(res => {
+                   this.actionAddress = res.data.address;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         addZero(m) {
           return m < 10 ? '0' + m : m;
         },
@@ -143,7 +153,9 @@ export default {
         }
     },
     mounted () {
-        this.uploadList = this.$refs.upload.fileList;
+        if(this.$store.state.isLogin){
+            this.getAddress();
+        }
     }
 }
 </script>
@@ -177,6 +189,10 @@ export default {
                 margin-left: -150px;
             }
         }
+    }
+    .tips-word{
+        color: #8A2BE2;
+        font-size: 16px;
     }
     .load-files{  
         position: relative;

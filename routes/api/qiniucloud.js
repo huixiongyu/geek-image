@@ -23,6 +23,22 @@ var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 var putPolicy = new qiniu.rs.PutPolicy(options);
 var uploadToken=putPolicy.uploadToken(mac);
 
+// 七牛的基础配置
+let httpMap = new Map([
+  ["z0", "http://upload.qiniup.com"],
+  ["z1", "http://upload-z1.qiniup.com"],
+  ["z2", "http://upload-z2.qiniup.com"],
+  ["na0", "http://upload-na0.qiniup.com"],
+  ["as0", "http://upload-as0.qiniup.com"]
+])
+
+let httpsMap = new Map([
+  ["z0", "https://upload.qiniup.com"],
+  ["z1", "https://upload-z1.qiniup.com"],
+  ["z2", "https://upload-z2.qiniup.com"],
+  ["na0", "https://upload-na0.qiniup.com"],
+  ["as0", "https://upload-as0.qiniup.com"]
+])
 /*
 @route POST /api/qiniu/
 @desc 上传文件
@@ -120,10 +136,32 @@ router.post('/config', passport.authenticate('jwt', { session: false }),
 /*
 @route POST /api/qiniu/config
 @desc 保存和更新七牛的配置
-@params AK, SK ,blucket, zone, url
+@params phone
 */
 router.get('/config', passport.authenticate('jwt', { session: false }),
     async ctx => {
+      const phone = ctx.query.phone
+      console.log(phone)
+      const findUser = await User.find({phone: phone})
+      if(findUser.length === 0){
+        ctx.status = 400
+        ctx.body = {message: '用户不存在！'}
+        return 
+      }
+      const findCloud = await Cloud.find({user: findUser[0].id})
+      if(findCloud.length === 0){
+        ctx.status =400
+        ctx.body = {message: '未存储配置信息！'}
+        return
+      }
+      const zone = findCloud[0].zone
+      const bindURL = findCloud[0].bindURL
+      if(bindURL.startsWith("http")){
+        ctx.body = {address: httpMap.get(zone)}
+      }else{
+        ctx.body = {address: httpsMap.get(zone)}
+      }
+      ctx.status = 200
     }
 );
 
