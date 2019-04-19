@@ -16,6 +16,7 @@
 </template>
 <script>
     export default {
+        props: ['postId'],
         data(){
             return {
                 actionAddress: 'http://upload-z2.qiniup.com',
@@ -68,17 +69,39 @@
                 }
                 let fileName = file.name;
                 fileName = this.handleFilename(fileName);
-                return this.$axios.post('/api/qiniu/',{filename: fileName, phone: this.$store.state.user.phone})
-                        .then(res => {
-                            this.uploadForm = {
-                                token: res.data.token,
-                                key: res.data.key
-                            }
+                if(this.postId === 'none'){
+                    return this.$axios.post('/api/qiniu/',{filename: fileName, phone: this.$store.state.user.phone})
+                            .then(res => {
+                                this.uploadForm = {
+                                    token: res.data.token,
+                                    key: res.data.key
+                                }
+                                setTimeout( () => {
+                                    location.reload();
+                                }, 2000);
+                            }, err => {
+                                this.$Message.warning('文件类型不允许');
+                                console.log(err);
+                            })
+                }else{
+                    return this.$axios.post('/api/qiniu/foralbum',
+                                {filename: fileName, 
+                                phone: this.$store.state.user.phone,
+                                postId: this.postId})
+                            .then(res => {
+                                this.uploadForm = {
+                                    token: res.data.token,
+                                    key: res.data.key
+                                }
+                                setTimeout( () => {
+                                    location.reload();
+                                }, 2000);
+                            }, err => {
+                                this.$Message.warning('文件类型不允许');
+                                console.log(err);
+                            })                    
+                }
 
-                        }, err => {
-                            this.$Message.warning('文件类型不允许');
-                            console.log(err);
-                        })
             },
             handleSuccess (res) {
                 this.$Message.success('上传成功');

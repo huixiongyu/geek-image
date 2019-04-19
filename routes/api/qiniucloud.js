@@ -113,6 +113,85 @@ router.post('/', passport.authenticate('jwt', { session: false }),
 );
 
 /*
+@route POST /api/qiniu/foralbum
+@desc 上传文件
+@param filename  phone postId
+*/
+router.post('/foralbum', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+      // console.log(ctx);
+      const filename = ctx.request.body.filename;
+      const phone = ctx.request.body.phone;
+      const postId = ctx.request.body.postId;
+      //判断文件类型是否允许
+      let allowedFiles = ['jpg', 'jpeg', 'jif', 'png'];
+      const fileArray = filename.split('.');
+      const fileType = fileArray[fileArray.length - 1];
+      const filterResult = allowedFiles.filter(item => item === fileType);
+      // console.log(filterResult);
+      if(filterResult.length === 0){
+        ctx.status = 401;
+        ctx.body = {
+          message: '文件类型不允许！'
+        }
+        return ;
+      }
+      const key = filename;
+      // console.log(key);
+      const originURL = `${cloudKey.bindURL}/${key}`;
+      const markdownURL = `![image](${cloudKey.bindURL}/${key})`;
+      //保存到Image模型
+      const findUser = await User.find({phone: phone});
+      if(findUser.length === 0){
+        ctx.status = 400;
+        ctx.body = {message: '不存在的用户！'};
+        return ;
+      }
+      const userId = findUser[0].id;
+      const newImage =new  Image({
+        user: userId,
+        originURL,
+        markdownURL
+      });
+      await newImage.save().catch(err => {
+        console.log(err)
+      });
+      // console.log('保存到了Image模型！')
+      //保存到默认相册
+      const findAlbum = await Album.findById(postId);
+      if(!findAlbum){
+        ctx.body = {message: '该相册不存在！'};
+        ctx.status = 400;
+        return;
+      }
+      const imageItem = {
+        originURL,
+        markdownURL
+      }
+      await Album.findOneAndUpdate(
+          {_id: postId},
+          {$push: {images: imageItem}},
+          {new: true}
+      );
+      // 保存到  所有相册
+      const findAllAlbum = await Album.find({selected: true});
+      const itemID = findAllAlbum[0].id;
+      console.log(itemID);
+      await Album.findOneAndUpdate(
+        {_id: itemID},
+        {$push: {images: imageItem}},
+        {new: true}
+      );   
+      ctx.body = {
+        token: uploadToken,
+        key: key,
+        originURL,
+        markdownURL
+      };
+    }
+);
+
+/*
 @route POST /api/qiniu/config
 @desc 保存和更新七牛的配置
 @params AK, SK ,blucket, zone, url

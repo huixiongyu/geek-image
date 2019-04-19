@@ -2,7 +2,7 @@
     <div class="album">
         <div class="control-area">
             <div class="control-btn">
-                <image-uploader class="uploader"></image-uploader>
+                <image-uploader post-id="none" class="uploader"></image-uploader>
                 <Button @click="handleNew">创建相册</Button>
                 <Button @click="handleSetting">上传设置</Button>
             </div>
@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="albums">
-            <div class="box" v-for="item in albumList" :key="item.albumID">
+            <router-link tag="div" class="box" v-for="item in albumList" :key="item.albumID" :to="'/album/' + item.albumID">
                 <Icon class="float-tag" size="32" type="ios-bookmark" v-if="item.selected" />
                 <div class="pic" :style="{background: 'url(' + item.cover +')'}">
                     <div class="nums">
@@ -21,7 +21,7 @@
                 <div class="title">
                     <span>{{item.name}}</span> 
                 </div>
-            </div>
+            </router-link>
             <div class="clear"></div>                                                                                                                              
         </div>
 
@@ -123,7 +123,7 @@ export default {
                     }
                     this.candeleteAlbum = this.uploadSelect;
                     this.candeleteAlbum.splice(0, 1);
-                    // console.log(this.candeleteAlbum)
+                    console.log(this.candeleteAlbum)
                     // console.log(res);
                 })
                 .catch(error  => {

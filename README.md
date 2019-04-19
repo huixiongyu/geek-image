@@ -111,8 +111,19 @@ mounted () {
   * 上传文件  POST /api/qiniu/
     * filename 文件名
     * phone 用户手机号
+  * 上传到特定的相册 POST /api/qiniu/foralbum
+    * filename 文件名
+    * phone 用户手机号
+    * postId 相册的id
+  * 保存和更改七牛配置信息 POST  /api/qiniu/config
+    * accessKey
+    * secretKey
+    * bucketName
+    * zone
+    * bindURL
+    * phone
 * ablum
-  * 获取相册信息 GET /api/album
+  * 获取所有相册信息 GET /api/album
   * 创建相册 POST /api/album/new
     * name 相册名字
     * phone 用户手机号
@@ -120,6 +131,12 @@ mounted () {
     * selectedList 一个包含相册id的数组
   * 删除相册 POST /api/album/delete  后期增加管理相册的时候会有删除空间中的相片的需求
     * deleteList  需要删除的id号
+  * 删除某些图片 POST /api/album/delete/image
+    * deleteList  要删除图片的ID
+    * albumID 所在相册的ID
+  * 获取相册里的图片  GET /api/album/:id
+  * 获取特定相册的信息 GET /api/album/info
+    * albumID 相册的id 
 
 
 
@@ -156,8 +173,13 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
 
 * 为了方便复制了代码，忘记了修改Schema导致的报错：` OverwriteModelError: Cannot overwrite `users` model once compiled.`
 * 使用了浮动的话，父元素随着子元素增加大小增加的效果会消失，记得在父盒子的尾元素添加`clear:both` 
-* 使用mongose的findOneAndUpdate时，如果查找的是id，需要加 _id
+* 使用mongoose的findOneAndUpdate时，如果查找的是id，需要加 _id
 * 在可迭代对象for..in中，判断item的序号不能使用`=== ` 
 * 报错`Invalid prop: type check failed for prop "model". Expected Object, got Array` 一般出现在v-model中，我不小心在Form表单中绑定了数组
+* mongoose的findById返回的直接是该元素
 
 ![image](http://qiniu.hackslog.cn/2019-04-18/510067945.jpg)
+
+## 问题
+
+* 编程式导航params[不生效](https://router.vuejs.org/zh/guide/essentials/navigation.html)的情况

@@ -44,7 +44,7 @@ router.post('/new', passport.authenticate('jwt', { session: false }),
 
 /*
 @route GET  /api/album
-@desc 获取相册信息
+@desc 获取所有相册信息
 */
 router.get('/', passport.authenticate('jwt', { session: false }),
     async ctx => {
@@ -89,7 +89,7 @@ router.post('/selected', passport.authenticate('jwt', { session: false }),
             // console.log(albumUpdate);
         }
         for(let item of selectList){
-            console.log(item);
+            // console.log(item);
             await Album.findOneAndUpdate(
                 {_id: item},
                 {$set: {selected: true}},
@@ -120,6 +120,93 @@ router.post('/delete', passport.authenticate('jwt', { session: false }),
         ctx.body = {message: '相册删除成功！'};
         ctx.status = 200;
 });
+
+/*
+@route POST  /api/album/delete/image
+@desc 删除相册中的某些图片
+@param 传递的是数组
+*/
+router.post('/delete/image', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+        const deleteList = ctx.request.body.deleteList;
+        const albumID = ctx.request.body.albumID;
+        if(deleteList.length === 0)
+        {
+            ctx.body = {message: '不存在需要删除的图片！'};
+            ctx.status = 400;
+            return ;
+        }
+        const findAlbum = await Album.findById(albumID);
+        if(!findAlbum){
+            ctx.body = {message: '该相册不存在！'};
+            ctx.status = 400;
+            return ;           
+        }
+        let imageList = [];
+        for(let item of deleteList){
+            for(let imageIndex in findAlbum.images){
+                if(item !== findAlbum.images[imageIndex].id){
+                    imageList.push(findAlbum.images[imageIndex])
+                }
+            }
+        }
+        await Album.findOneAndUpdate(
+            { _id: albumID},
+            {$set: {images: imageList}},
+            {new: true}
+        );
+        ctx.body = {message: '图片删除成功！'};
+        ctx.status = 200;
+});
+
+/*
+@route GET  /api/album/info
+@desc 查看相册具体内容
+*/
+router.get('/info', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+        const albumId = ctx.query.albumID;
+        const findAlbum = await Album.findById(albumId);
+        if(!findAlbum){
+            ctx.status = 400;
+            ctx.body = {message: '该相册不存在！'};
+            return ;
+        }
+        let cover = ''
+        if(findAlbum.images.length !== 0){
+            cover = findAlbum.images[findAlbum.images.length -1].originURL;
+        }else{
+            cover = 'http://qiniu.hackslog.cn/2019-04-19/786412130.jpg'
+        }
+        const info = {
+            name: findAlbum.name,
+            selected: findAlbum.selected,
+            picNum: findAlbum.images.length,
+            albumID: albumId
+        }
+        ctx.body = info;
+        ctx.status = 200;
+});
+
+
+/*
+@route GET  /api/album/:id
+@desc 查看相册具体内容
+*/
+router.get('/:id', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+        const albumId = ctx.params.id;
+        const findAlbum = await Album.findById(albumId);
+        if(!findAlbum){
+            ctx.status = 400;
+            ctx.body = {message: '该相册不存在！'};
+            return ;
+        }
+        const imageList = findAlbum.images;
+        ctx.body = imageList;
+        ctx.status = 200;
+});
+
 
 
 module.exports = router.routes();

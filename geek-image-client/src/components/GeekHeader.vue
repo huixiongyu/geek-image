@@ -6,7 +6,17 @@
                 <i class="iconfont">&#xe62e;</i>上传
             </div>
             <div class="nav-album nav-word" @click="handleToAlbum">
-                <i class="iconfont">&#xe646;</i>相册
+                <Dropdown @on-click="selectAlbum">
+                    <i class="iconfont">&#xe646;</i>相册
+                    <DropdownMenu slot="list">
+                        <DropdownItem 
+                            v-for="item in albumsInfo" 
+                            :name="item.albumID"
+                            :key="item.albumID">
+                            {{item.name}}
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>    
             </div>
             <div class="manage nav-word" @click="handleToAdmin">
                 <i class="iconfont">&#xe600;</i>控制台
@@ -253,10 +263,20 @@ export default {
             },
             rulesQiniu: {
                 url: [{ required: true, type:'url', message: '绑定域名不符合规范'}]
-            }
+            },
+            albumsInfo: []
         }
     },
     methods: {
+        getData(){
+            this.$axios.get('/api/album')
+                .then(res => {
+                    this.albumsInfo = res.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         handleLogin(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -389,11 +409,16 @@ export default {
                 .catch(error => {
                     console.log(error);
                 })
+        },
+        selectAlbum(path){
+            console.log(path);
+            this.$router.push({ path: '/album' });
         }
     },
     created(){
         this.login = this.$store.state.isLogin;
         this.avatar = this.$store.state.user.avatar;
+        this.getData();
     }
 }
 </script>

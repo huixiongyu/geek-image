@@ -22,6 +22,14 @@ export default new Router({
       }
     },
     {
+      path: '/album/:path',
+      name: 'images',
+      component: () => import('./views/TheAlbum.vue'),
+      meta:  {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: () => import('./views/CloudAdmin.vue'),
