@@ -130,11 +130,19 @@ router.post('/register', async ctx => {
         console.log(`账户：${newUser.phone}创建成功！`)
         const findUser = await User.find({phone: ctx.request.body.phone})
         const newAlbum = new Album({
-            name: '默认相册',
+            name: '所有图片',
             user: findUser[0].id,
             selected: true
         })
         await newAlbum.save().catch(err => {
+            console.log(err)
+        });        
+        const newAlbum2 = new Album({
+            name: '默认相册',
+            user: findUser[0].id,
+            selected: true
+        })
+        await newAlbum2.save().catch(err => {
             console.log(err)
         });
         // 返回json数据

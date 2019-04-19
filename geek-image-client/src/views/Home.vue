@@ -116,7 +116,7 @@ export default {
             }
             this.imageList.push(img);
             // console.log(this.imageList);
-            return this.$axios.post('/api/qiniu/',{filename: fileName})
+            return this.$axios.post('/api/qiniu/',{filename: fileName, phone: this.$store.state.user.phone})
                     .then(res => {
                         this.uploadForm = {
                             token: res.data.token,
@@ -129,9 +129,9 @@ export default {
                             }
                         }
                         console.log(res.data.markdownURL);
-                        console.log(res.data.orginURL);
+                        console.log(res.data.originURL);
                     }, err => {
-                        this.$Message.warning('文件类型不允许');
+                        this.$Message.warning('文件类型不允许! 或者更新一下配置信息吧！');
                         console.log(err);
                     })
         },

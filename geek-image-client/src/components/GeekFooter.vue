@@ -15,6 +15,7 @@ export default {
 </script>
 <style lang="less">
     .footer{
+        clear: both;
         width: 100%;
         height: 50px;
         border-top: 1px solid #D3D3D3;

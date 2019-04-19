@@ -6,6 +6,8 @@ var qiniu = require("qiniu");
 
 const User = require('../../models/User')
 const Cloud = require('../../models/Cloud')
+const Image = require('../../models/Image')
+const Album = require('../../models/Album')
 
 const validateQiniuInput = require('../../validation/qiniu-config')
 //需要填写你的 Access Key 和 Secret Key
@@ -48,12 +50,13 @@ router.post('/', passport.authenticate('jwt', { session: false }),
     async ctx => {
       // console.log(ctx);
       const filename = ctx.request.body.filename;
+      const phone = ctx.request.body.phone;
       //判断文件类型是否允许
       let allowedFiles = ['jpg', 'jpeg', 'jif', 'png'];
       const fileArray = filename.split('.');
       const fileType = fileArray[fileArray.length - 1];
       const filterResult = allowedFiles.filter(item => item === fileType);
-      console.log(filterResult);
+      // console.log(filterResult);
       if(filterResult.length === 0){
         ctx.status = 401;
         ctx.body = {
@@ -63,16 +66,47 @@ router.post('/', passport.authenticate('jwt', { session: false }),
       }
       const key = filename;
       // console.log(key);
-      const orginURL = `${cloudKey.bindURL}/${key}`;
+      const originURL = `${cloudKey.bindURL}/${key}`;
       const markdownURL = `![image](${cloudKey.bindURL}/${key})`;
       //保存到Image模型
-
-
-      //保存到特定相册
+      const findUser = await User.find({phone: phone});
+      if(findUser.length === 0){
+        ctx.status = 400;
+        ctx.body = {message: '不存在的用户！'};
+        return ;
+      }
+      const userId = findUser[0].id;
+      const newImage =new  Image({
+        user: userId,
+        originURL,
+        markdownURL
+      });
+      await newImage.save().catch(err => {
+        console.log(err)
+      });
+      // console.log('保存到了Image模型！')
+      //保存到默认相册和所有图片
+      const findAlbum = await Album.find({selected: true});
+      // console.log(findAlbum);
+      const imageItem = {
+        originURL,
+        markdownURL
+      }
+      for(let item of findAlbum){
+        const itemID = item.id;
+        // console.log(itemID);
+        const albumUpdate = await Album.findOneAndUpdate(
+          {_id: itemID},
+          {$push: {images: imageItem}},
+          {new: true}
+        );
+        // console.log(albumUpdate);
+      }
+      // console.log('保存到了相册！');
       ctx.body = {
         token: uploadToken,
         key: key,
-        orginURL,
+        originURL,
         markdownURL
       };
     }
@@ -134,14 +168,14 @@ router.post('/config', passport.authenticate('jwt', { session: false }),
 )
 
 /*
-@route POST /api/qiniu/config
+@route GET /api/qiniu/config
 @desc 保存和更新七牛的配置
 @params phone
 */
 router.get('/config', passport.authenticate('jwt', { session: false }),
     async ctx => {
       const phone = ctx.query.phone
-      console.log(phone)
+      // console.log(phone)
       const findUser = await User.find({phone: phone})
       if(findUser.length === 0){
         ctx.status = 400
@@ -157,9 +191,15 @@ router.get('/config', passport.authenticate('jwt', { session: false }),
       const zone = findCloud[0].zone
       const bindURL = findCloud[0].bindURL
       if(bindURL.startsWith("http")){
-        ctx.body = {address: httpMap.get(zone)}
+        ctx.body = {
+          address: httpMap.get(zone),
+          bindURL
+        }
       }else{
-        ctx.body = {address: httpsMap.get(zone)}
+        ctx.body = {
+          address: httpsMap.get(zone),
+          bindURL
+        }
       }
       ctx.status = 200
     }

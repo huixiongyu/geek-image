@@ -17,7 +17,8 @@ const AlbumSchema = new Schema({
     images:[
         {
             name: {
-                type: String
+                type: String,
+                default: 'image'
             },
             originURL: {
                 type: String,

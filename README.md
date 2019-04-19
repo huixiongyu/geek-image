@@ -76,7 +76,6 @@ module.exports = {
 
 ## 功能完善
 
-* 短信验证
 * 七牛云
 * 阿里云
 * 又拍云
@@ -112,6 +111,15 @@ mounted () {
   * 上传文件  POST /api/qiniu/
     * filename 文件名
     * phone 用户手机号
+* ablum
+  * 获取相册信息 GET /api/album
+  * 创建相册 POST /api/album/new
+    * name 相册名字
+    * phone 用户手机号
+  * 更改默认相册 POST /api/album/selected
+    * selectedList 一个包含相册id的数组
+  * 删除相册 POST /api/album/delete  后期增加管理相册的时候会有删除空间中的相片的需求
+    * deleteList  需要删除的id号
 
 
 
@@ -147,11 +155,9 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
 ![](http://qiniu.hackslog.cn/Snipaste_2019-04-17_16-33-14.png)
 
 * 为了方便复制了代码，忘记了修改Schema导致的报错：` OverwriteModelError: Cannot overwrite `users` model once compiled.`
-
-
-
-
-
-
+* 使用了浮动的话，父元素随着子元素增加大小增加的效果会消失，记得在父盒子的尾元素添加`clear:both` 
+* 使用mongose的findOneAndUpdate时，如果查找的是id，需要加 _id
+* 在可迭代对象for..in中，判断item的序号不能使用`=== ` 
+* 报错`Invalid prop: type check failed for prop "model". Expected Object, got Array` 一般出现在v-model中，我不小心在Form表单中绑定了数组
 
 ![image](http://qiniu.hackslog.cn/2019-04-18/510067945.jpg)

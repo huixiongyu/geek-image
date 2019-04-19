@@ -248,7 +248,7 @@ export default {
                 accessKey: '',
                 secretKey: '',
                 bucket: '',
-                zone: '华南',
+                zone: 'z2',
                 url: ''
             },
             rulesQiniu: {
