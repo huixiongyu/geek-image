@@ -140,9 +140,11 @@ export default {
                 border:1px solid #ccc;
                 box-shadow: 0 0 6px #ccc;
                 border-radius: 5px;
+                width:260px;
+                height:260px;
                 img{
-                    width:260px;
-                    height:260px;
+                    width:100%;
+                    height:100%;
                     background-color: antiquewhite;
                 }
             }
@@ -161,7 +163,7 @@ export default {
         }
     }
     .image-expand{
-        width: 400px;
+        width: 500px;
         img{
             width: 100%;
             height: auto;

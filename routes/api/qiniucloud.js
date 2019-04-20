@@ -52,7 +52,7 @@ router.post('/', passport.authenticate('jwt', { session: false }),
       const filename = ctx.request.body.filename;
       const phone = ctx.request.body.phone;
       //判断文件类型是否允许
-      let allowedFiles = ['jpg', 'jpeg', 'jif', 'png'];
+      let allowedFiles = ['jpg', 'jpeg', 'gif', 'png'];
       const fileArray = filename.split('.');
       const fileType = fileArray[fileArray.length - 1];
       const filterResult = allowedFiles.filter(item => item === fileType);
@@ -124,7 +124,7 @@ router.post('/foralbum', passport.authenticate('jwt', { session: false }),
       const phone = ctx.request.body.phone;
       const postId = ctx.request.body.postId;
       //判断文件类型是否允许
-      let allowedFiles = ['jpg', 'jpeg', 'jif', 'png'];
+      let allowedFiles = ['jpg', 'jpeg', 'gif', 'png'];
       const fileArray = filename.split('.');
       const fileType = fileArray[fileArray.length - 1];
       const filterResult = allowedFiles.filter(item => item === fileType);

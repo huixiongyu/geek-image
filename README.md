@@ -3,8 +3,6 @@
 
 本项目2019年4月8日开始构建
 
-
-
 ## 运行
 
 config文件夹下的keys.js
@@ -19,10 +17,6 @@ module.exports = {
     }
 }
 ```
-
-
-
-
 
 
 
@@ -52,6 +46,9 @@ module.exports = {
   * [上传401报错码](https://developer.qiniu.com/kodo/kb/1330/upload-error-code-401) 
 * [moment ](http://momentjs.cn/docs/#/displaying/) 格式化时间
 * [vue-clipboard2](https://www.npmjs.com/package/vue-clipboard2) 将内容复制到剪贴板
+* 阿里云OSS上传相关
+  * [对象存储OSS](https://help.aliyun.com/document_detail/31947.html?spm=5176.87240.400427.2.70574614vr3oh2)
+* [vue-waterfall2](https://segmentfault.com/a/1190000017042878)
 
 **VScode、Postman、mlab**
 
@@ -69,20 +66,6 @@ module.exports = {
 * [koa2下使用koa-multer上传文件](https://www.jianshu.com/p/f9062b969a6e)
 * [异步上传图片](https://chenshenhai.github.io/koa2-note/note/upload/pic-async.html) 
 * [使用$refs访问Vue中的DOM](https://www.w3cplus.com/vue/accessing-dom-refs.html)
-
-
-
-
-
-## 功能完善
-
-* 七牛云
-* 阿里云
-* 又拍云
-* chrome插件，上传和解析网站的画廊（图流）功能
-* Electron客户端
-
-
 
 ## 接口
 
