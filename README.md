@@ -125,6 +125,9 @@ mounted () {
   * 创建相册 POST /api/album/new
     * name 相册名字
     * phone 用户手机号
+  * 相册重命名 POST /api/album/rename
+    * albumID 所在相册的ID
+    * name 重命名后的名字
   * 更改默认相册 POST /api/album/selected
     * selectedList 一个包含相册id的数组
   * 删除相册 POST /api/album/delete  后期增加管理相册的时候会有删除空间中的相片的需求

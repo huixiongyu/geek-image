@@ -2,7 +2,7 @@
     <div class="album">
         <div class="control-area">
             <image-uploader :post-id="albumPath" class="uploader"></image-uploader>
-             <Button type="text" size="large">{{albumInfo.name}}</Button>
+             <Button type="text" size="large" @click="hanldeRename">{{albumInfo.name}}</Button>
             <Button type="error">删除图片</Button>
         </div>
         <div class="albums">
@@ -17,7 +17,20 @@
                     <Icon size="24" type="logo-markdown" @click="handleMarkdown(item.markdownURL)" />
                 </div>
             </div>                                                                                                                            
-        </div>       
+        </div>
+        <Modal
+            class-name="vertical-center-modal"
+            v-model="renameModal"
+            title="相册重命名">
+            <Input prefix="md-aperture" 
+                class="rename" 
+                placeholder="Enter name"
+                autofocus
+                clearable
+                v-model="newName" 
+                style="width: 300px; height: 50px;" />
+            <Button class="album-modal-btn" @click="toRename" type="primary" slot="footer">确认</Button>
+        </Modal>           
         <Modal
             v-model="imageModal"
             title="图片">
@@ -38,9 +51,11 @@ export default {
         return {
             imageList: [],
             imageModal: false,
+            renameModal: false,
             albumPath: '',
             albumInfo: {},
-            imageURL: ''
+            imageURL: '',
+            newName: ''
         }
     },
     methods: {
@@ -92,6 +107,28 @@ export default {
             }, function (e) {
                 console.log(e);
             })            
+        },
+        hanldeRename(){
+            this.renameModal = true;
+        },
+        toRename(){
+            if(this.newName === ''){
+                this.$Message.warning('相册名字不能为空');
+                return ;
+            }
+            this.$axios.post('/api/album/rename', {name: this.newName, albumId: this.albumPath})
+                .then(() => {
+                    this.$Message.success('相册名字修改成功！');
+                    this.newName = '';
+                    this.renameModal = false;
+                    location.reload();
+                }, () => {
+                    this.$Message.error('名字重复，创建失败！');
+                    this.newName = '';
+                })
+                .catch(error => {
+                    console.log(error);
+                })
         }
         
     },
@@ -167,6 +204,12 @@ export default {
         img{
             width: 100%;
             height: auto;
+        }
+    }
+    .rename{
+        .ivu-input{
+            height: 35px;
+
         }
     }
 </style>

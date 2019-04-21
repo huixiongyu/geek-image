@@ -102,6 +102,42 @@ router.post('/selected', passport.authenticate('jwt', { session: false }),
 });
 
 /*
+@route POST  /api/album/rename
+@desc 相册重命名
+*/
+router.post('/rename', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+        const newName = ctx.request.body.name;
+        const albumID = ctx.request.body.albumId;
+        if(newName === ''){
+            ctx.status = 400;
+            ctx.body = {message: '相册名字不能为空！'};
+            return ;            
+        }
+        const checkName = await Album.find({name: newName});
+        if(checkName.length > 0){
+            ctx.status = 400;
+            ctx.body = {message: '相册名字不能重复！'};
+            return ;           
+        }
+        const findAlbum = await Album.findById(albumID);
+        if(!findAlbum){
+            ctx.status = 400;
+            ctx.body = {message: '该相册不存在！'};
+            return ;
+        }
+        await Album.findOneAndUpdate(
+            {_id: albumID},
+            {$set: {name: newName}},
+            {new: true}
+        );
+        ctx.body = { message: '相册名字修改成功！'};
+        ctx.stale = 200;
+    }
+);
+
+
+/*
 @route POST  /api/album/delete
 @desc 删除相册
 */
