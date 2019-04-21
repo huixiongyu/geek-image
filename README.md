@@ -18,7 +18,22 @@ module.exports = {
 }
 ```
 
+命令：
 
+```
+npm run dev
+// 注册
+// 登录
+// 配置七牛云密钥
+```
+
+效果：
+
+![image](http://qiniu.hackslog.cn/2019-04-21/811728198.png)
+
+![image](http://qiniu.hackslog.cn/2019-04-21/615793546.png)
+
+![image](http://qiniu.hackslog.cn/2019-04-21/392311125.png)
 
 ## 开发
 
