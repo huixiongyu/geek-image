@@ -81,6 +81,7 @@ npm run dev
 * [koa2下使用koa-multer上传文件](https://www.jianshu.com/p/f9062b969a6e)
 * [异步上传图片](https://chenshenhai.github.io/koa2-note/note/upload/pic-async.html) 
 * [使用$refs访问Vue中的DOM](https://www.w3cplus.com/vue/accessing-dom-refs.html)
+* [mongodb数组更新操作](https://docs.mongodb.com/manual/reference/operator/update-array/)
 
 ## 接口
 
@@ -185,3 +186,4 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
 ## 问题
 
 * 编程式导航params[不生效](https://router.vuejs.org/zh/guide/essentials/navigation.html)的情况
+* mongoose嵌套数组的元素删除、替换

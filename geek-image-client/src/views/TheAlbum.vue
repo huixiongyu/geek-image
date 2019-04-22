@@ -3,12 +3,17 @@
         <div class="control-area">
             <image-uploader :post-id="albumPath" class="uploader"></image-uploader>
              <Button type="text" size="large" @click="hanldeRename">{{albumInfo.name}}</Button>
-            <Button type="error">删除图片</Button>
+             <div class="delete-btn">
+                 <Button type="primary" @click="confirmDelete" v-if="showPicBtn">确认删除</Button>
+                <Button type="error" @click="handleDelete">{{deleteBtn}}</Button>
+             </div>
         </div>
         <div class="albums">
-            <div class="box" v-for="item in imageList" :key="item.originURL">
+            <div class="box" v-for="item in imageList" :key="item.originURL" @click="handleSelect(item)">
                 <div class="pic">
                     <img :src="item.originURL"/>
+                     <i class="iconfont select-pic" v-if="(!item.beSelected) && showPicBtn">&#xe72e;</i>
+                     <i class="iconfont select-pic be-selected" v-if="item.beSelected && showPicBtn">&#xe62d;</i>
                 </div>
                 <div class="tools">
                     <Icon size="24" type="md-copy" @click="handleCopy(item.originURL)" />
@@ -55,7 +60,10 @@ export default {
             albumPath: '',
             albumInfo: {},
             imageURL: '',
-            newName: ''
+            newName: '',
+            showPicBtn: false,
+            deleteList: [],
+            deleteBtn: '删除图片'
         }
     },
     methods: {
@@ -67,6 +75,10 @@ export default {
                         return a.date < b.date ? 1: -1;
                     })
                     this.imageList = resultList;
+                    // console.log(this.imageList);
+                    // for(let item of this.imageList){
+                    //     item.beSelected = false
+                    // }
                     // console.log(this.imageList);
                 })
                 .then(() => {
@@ -129,6 +141,51 @@ export default {
                 .catch(error => {
                     console.log(error);
                 })
+        },
+        handleDelete(){
+            this.showPicBtn =!this.showPicBtn;
+            if(this.showPicBtn){
+                this.deleteBtn = '取消选择';
+                this.deleteList = [];
+                for(let item of this.imageList){
+                    this.$set(item, "beSelected", false);
+                }
+            }else{
+                this.deleteBtn = '删除图片';
+            }
+            
+            console.log(this.showPicBtn);
+        },
+        handleSelect(item){
+            if(item.beSelected){
+                this.$set(item, "beSelected", false);
+                const removeIndex = this.deleteList.indexOf(item.originURL);
+                console.log(removeIndex);
+                if(removeIndex !== -1){
+                     this.deleteList.splice(removeIndex, 1);
+                }
+            }else{
+                this.$set(item, "beSelected", true);
+                this.deleteList.push(item.originURL);
+            }
+            
+            console.log(this.deleteList);
+        },
+        confirmDelete(){
+            if(this.deleteList.length === 0){
+                this.$Message.warning('没有需要删除的图片！');
+                return ;
+            }
+            this.$axios.post('/api/album/delete/image',{
+                deleteList: this.deleteList,
+                albumID: this.albumPath
+            })
+            .then(() => {
+                this.$Message.success('删除成功！');
+                location.reload();
+            }, () => {
+                this.$Message.warning('删除失败！');
+            });
         }
         
     },
@@ -159,6 +216,11 @@ export default {
             font-size: 26px;
             font-weight: 600;
         }
+        .delete-btn{
+            width: 200px;
+            display: flex;
+            justify-content: space-between;
+        }
     }
     .albums{
         position: relative;
@@ -173,6 +235,7 @@ export default {
             box-sizing: border-box;
             margin: 30px;
             .pic{
+                position: relative;
                 padding: 10px;
                 border:1px solid #ccc;
                 box-shadow: 0 0 6px #ccc;
@@ -183,6 +246,18 @@ export default {
                     width:100%;
                     height:100%;
                     background-color: antiquewhite;
+                }
+                .select-pic{
+                    position: absolute;
+                    right: 12px;
+                    top: 6px;
+                    z-index: 99;
+                    font-size: 28px;
+                    color: black;
+                    cursor: pointer;
+                }
+                .be-selected{
+                    color: #7FFF00;
                 }
             }
             .tools{

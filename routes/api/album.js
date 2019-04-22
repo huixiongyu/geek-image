@@ -164,6 +164,7 @@ router.post('/delete', passport.authenticate('jwt', { session: false }),
 */
 router.post('/delete/image', passport.authenticate('jwt', { session: false }),
     async ctx => {
+        console.log('进来了')
         const deleteList = ctx.request.body.deleteList;
         const albumID = ctx.request.body.albumID;
         if(deleteList.length === 0)
@@ -178,17 +179,19 @@ router.post('/delete/image', passport.authenticate('jwt', { session: false }),
             ctx.status = 400;
             return ;           
         }
+        console.log('验证通过')
         let imageList = [];
         for(let item of deleteList){
             for(let imageIndex in findAlbum.images){
-                if(item !== findAlbum.images[imageIndex].id){
-                    imageList.push(findAlbum.images[imageIndex])
+                if(item === findAlbum.images[imageIndex].originURL){
+                    findAlbum.images.splice(imageIndex, 1);
                 }
             }
         }
+        console.log(imageList);
         await Album.findOneAndUpdate(
             { _id: albumID},
-            {$set: {images: imageList}},
+            {$set: findAlbum},
             {new: true}
         );
         ctx.body = {message: '图片删除成功！'};
