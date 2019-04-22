@@ -120,6 +120,7 @@ mounted () {
     * zone
     * bindURL
     * phone
+  * 获取配置信息 GET  /api/qiniu/config?phone=xxx
 * ablum
   * 获取所有相册信息 GET /api/album
   * 创建相册 POST /api/album/new

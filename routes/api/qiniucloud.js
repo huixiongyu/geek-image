@@ -247,7 +247,7 @@ router.post('/config', passport.authenticate('jwt', { session: false }),
 )
 
 /*
-@route GET /api/qiniu/config
+@route GET /api/qiniu/config?phone=xxx
 @desc 保存和更新七牛的配置
 @params phone
 */
@@ -269,15 +269,26 @@ router.get('/config', passport.authenticate('jwt', { session: false }),
       }
       const zone = findCloud[0].zone
       const bindURL = findCloud[0].bindURL
+      const accessKey = findCloud[0].accessKey
+      const secretKey = findCloud[0].secretKey
+      const bucketName = findCloud[0].bucketName
       if(bindURL.startsWith("http")){
         ctx.body = {
           address: httpMap.get(zone),
-          bindURL
+          bindURL,
+          accessKey,
+          secretKey,
+          bucketName,
+          zone
         }
       }else{
         ctx.body = {
           address: httpsMap.get(zone),
-          bindURL
+          bindURL,
+          accessKey,
+          secretKey,
+          bucketName,
+          zone          
         }
       }
       ctx.status = 200

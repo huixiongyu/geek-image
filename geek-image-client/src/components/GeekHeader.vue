@@ -275,6 +275,17 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
+                });
+            this.$axios.get(`/api/qiniu/config?phone=${this.$store.state.user.phone}`)
+                .then(res => {
+                    this.qiniuInfo.accessKey = res.data.accessKey;
+                    this.qiniuInfo.secretKey = res.data.secretKey;
+                    this.qiniuInfo.bucket = res.data.bucketName;
+                    this.qiniuInfo.zone = res.data.zone;
+                    this.qiniuInfo.url = res.data.bindURL;
+                })
+                .catch(error => {
+                    console.log(error);
                 })
         },
         handleLogin(name){
