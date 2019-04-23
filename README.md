@@ -63,7 +63,10 @@ npm run dev
 * [vue-clipboard2](https://www.npmjs.com/package/vue-clipboard2) 将内容复制到剪贴板
 * 阿里云OSS上传相关
   * [对象存储OSS](https://help.aliyun.com/document_detail/31947.html?spm=5176.87240.400427.2.70574614vr3oh2)
-* [vue-waterfall2](https://segmentfault.com/a/1190000017042878) && [vue-waterfall-easy](https://www.npmjs.com/package/vue-waterfall-easy)
+* 瀑布流相关
+  * [vue-waterfall2](https://segmentfault.com/a/1190000017042878)
+  * [vue-waterfall-easy](https://www.npmjs.com/package/vue-waterfall-easy)
+  * [waterfall](https://github.com/watson-yan/waterfall) 
 
 **VScode、Postman、mlab**
 
@@ -95,6 +98,9 @@ npm run dev
    *  登录账号 POST /api/users/login
       *  phone  手机号
       *  password 密码
+   *  短信登录 POST api/users/codelogin
+      *  phone 手机号
+      *  code 验证码
 *  upload
    *  上传图片到服务器的文件夹 POST  /api/upload/
 

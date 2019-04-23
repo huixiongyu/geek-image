@@ -12,8 +12,8 @@
             <div class="box" v-for="item in imageList" :key="item.originURL" @click="handleSelect(item)">
                 <div class="pic">
                     <img :src="item.originURL"/>
-                     <i class="iconfont select-pic" v-if="(!item.beSelected) && showPicBtn">&#xe72e;</i>
-                     <i class="iconfont select-pic be-selected" v-if="item.beSelected && showPicBtn">&#xe62d;</i>
+                     <i class="iconfont select-pic" v-show="(!item.beSelected) && showPicBtn">&#xe72e;</i>
+                     <i class="iconfont select-pic be-selected" v-show="item.beSelected && showPicBtn">&#xe62d;</i>
                 </div>
                 <div class="tools">
                     <Icon size="24" type="md-copy" @click="handleCopy(item.originURL)" />
@@ -42,7 +42,8 @@
             <div class="image-expand">
                 <img :src="imageURL" alt="">
             </div>
-        </Modal>                   
+        </Modal>      
+        <BackTop :bottom="100"></BackTop>             
     </div>
 </template>
 <script>

@@ -175,7 +175,8 @@ router.post('/login', async ctx => {
     // 判断查没查到
     if (findResult.length === 0) {
         ctx.status = 404;
-        ctx.body = { email: '用户不存在!' };
+        ctx.body = { message: '用户不存在!' };
+        return ;
     } else {
         // 查到后 验证密码
         let result = await bcrypt.compareSync(password, user.password);
@@ -197,6 +198,47 @@ router.post('/login', async ctx => {
             ctx.status = 400;
             ctx.body = { password: '密码错误!' };
         }
+    }
+});
+/*
+@router POST  api/users/codelogin
+@desc 返回Token
+ */
+router.post('/codelogin', async ctx => {
+    const phoneNum = ctx.request.body.phone;
+    const checkCode = ctx.request.body.code;
+    //这里的电话号码没有验证，存在风险
+    if(!/^1\d{10}$/.test(phoneNum)){
+        ctx.status = 400;
+        ctx.body = {
+            message: '电话号码不符合要求！'
+        }
+        return ;
+    }
+    // 查询
+    const findResult = await User.find({ phone: phoneNum });
+    const findCode = await Code.find({phone: phoneNum});
+    if(findCode.length === 0 || findCode[0].codeNum !== checkCode){
+        ctx.status = 400;
+        ctx.body = {
+            message: '验证码或者电话号码错误！'
+        }
+        return ;
+    }
+    if(findResult.length > 0){
+        const user = findResult[0];
+        const payload = {
+            id: user.id,
+            avatar: user.avatar,
+            phone: user.phone
+        };        
+        const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24*7 });
+        ctx.body = { success: true, token: 'Bearer ' + token };
+        ctx.status = 200;
+    }else{
+        ctx.status = 404;
+        ctx.body = { message: '用户不存在!' };
+        return ;
     }
 });
 
