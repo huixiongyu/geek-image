@@ -63,7 +63,7 @@ npm run dev
 * [vue-clipboard2](https://www.npmjs.com/package/vue-clipboard2) 将内容复制到剪贴板
 * 阿里云OSS上传相关
   * [对象存储OSS](https://help.aliyun.com/document_detail/31947.html?spm=5176.87240.400427.2.70574614vr3oh2)
-* [vue-waterfall2](https://segmentfault.com/a/1190000017042878)
+* [vue-waterfall2](https://segmentfault.com/a/1190000017042878) && [vue-waterfall-easy](https://www.npmjs.com/package/vue-waterfall-easy)
 
 **VScode、Postman、mlab**
 
