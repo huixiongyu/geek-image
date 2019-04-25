@@ -196,10 +196,12 @@ export default {
     }
     .load-files{  
         position: relative;
-        width: 100%;
-        padding: 0 0px 100px 200px;
+        // width: 100%;
+        padding: 0 auto;
+        // padding: 0 0px 100px 200px;
         padding-bottom: 100px;
         .files-item{
+            margin: 0 auto;
             width: 1000px;
             height: 200px;
             margin-bottom: 20px;

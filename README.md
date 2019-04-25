@@ -35,6 +35,10 @@ npm run dev
 
 ![image](http://qiniu.hackslog.cn/2019-04-21/392311125.png)
 
+瀑布流（Pinterest）：
+
+![image](http://qiniu.hackslog.cn/2019-04-25/334848397.png)
+
 ## 开发
 
 * [vue2-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation) 图片上传组件

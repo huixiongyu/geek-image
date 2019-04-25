@@ -188,7 +188,7 @@ router.post('/login', async ctx => {
                 avatar: user.avatar,
                 phone: user.phone
             };
-            const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24*7 });
+            const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24*7*30 });
             // console.log('Token设置成功')
             // console.log('验证完！')
             // console.log(token);
@@ -232,7 +232,7 @@ router.post('/codelogin', async ctx => {
             avatar: user.avatar,
             phone: user.phone
         };        
-        const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24*7 });
+        const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600*24*7*30 });
         ctx.body = { success: true, token: 'Bearer ' + token };
         ctx.status = 200;
     }else{
