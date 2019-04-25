@@ -4,8 +4,8 @@
             <image-uploader :post-id="albumPath" class="uploader"></image-uploader>
              <Button type="text" size="large" @click="hanldeRename">{{albumInfo.name}}</Button>
              <div class="delete-btn">
-                 <Button type="primary" @click="confirmDelete" v-if="showPicBtn">确认删除</Button>
-                <Button type="error" @click="handleDelete">{{deleteBtn}}</Button>
+                 <Button type="primary" @click="handleLeftClick">{{moveImagesBtn}}</Button>
+                <Button type="error" @click="handleRightClick">{{deleteBtn}}</Button>
              </div>
         </div>
         <div class="albums">
@@ -42,7 +42,17 @@
             <div class="image-expand">
                 <img :src="imageURL" alt="">
             </div>
-        </Modal>      
+        </Modal>   
+        <!-- 移动图片的选择框，这里要出现列表 -->
+        <Modal
+            class-name="vertical-center-modal"
+            v-model="moveModal"
+            title="移动图片到其他相册">
+            <Select v-model="albumMoveTo" style="width:200px">
+                <Option v-for="item in albumSelect" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+            <Button class="album-modal-btn" @click="confirmMove" type="primary" slot="footer">确认</Button>
+        </Modal>             
         <BackTop :bottom="100"></BackTop>             
     </div>
 </template>
@@ -56,19 +66,41 @@ export default {
     data(){
         return {
             imageList: [],
+            albumsInfo: [],
+            albumSelect: [],
             imageModal: false,
             renameModal: false,
+            moveModal: false,
             albumPath: '',
             albumInfo: {},
             imageURL: '',
             newName: '',
             showPicBtn: false,
-            deleteList: [],
-            deleteBtn: '删除图片'
+            deleteList: [],  //删除和移动都是
+            moveImagesBtn: '移动图片',
+            deleteBtn: '删除图片',
+            albumMoveTo: ''
         }
     },
     methods: {
         getData(){
+            this.$axios.get('/api/album')
+                .then(res => {
+                    this.albumsInfo = res.data;
+                    for(let item of this.albumsInfo){
+                        if((this.albumPath !== item.albumID) && (item.name !== '所有图片')){
+                            const albumItem = {
+                                value: item.albumID,
+                                label: item.name
+                            }
+                            this.albumSelect.push(albumItem);
+                        }
+                    }
+                    // console.log(`这是筛选后的数组：${this.albumSelect}`);                    
+                })
+                .catch(error => {
+                    console.log(error);
+                });
             this.$axios.get(`/api/album/${this.albumPath}`)
                 .then(res => {
                     let resultList = res.data;
@@ -76,11 +108,6 @@ export default {
                         return a.date < b.date ? 1: -1;
                     })
                     this.imageList = resultList;
-                    // console.log(this.imageList);
-                    // for(let item of this.imageList){
-                    //     item.beSelected = false
-                    // }
-                    // console.log(this.imageList);
                 })
                 .then(() => {
                     this.$axios.get(`/api/album/info?albumID=${this.albumPath}`)
@@ -90,7 +117,7 @@ export default {
                 })
                 .catch(error  => {
                     console.log(error);
-                })
+                });
         },
         handleCopy(url){
             this.$Notice.success({
@@ -143,25 +170,11 @@ export default {
                     console.log(error);
                 })
         },
-        handleDelete(){
-            this.showPicBtn =!this.showPicBtn;
-            if(this.showPicBtn){
-                this.deleteBtn = '取消选择';
-                this.deleteList = [];
-                for(let item of this.imageList){
-                    this.$set(item, "beSelected", false);
-                }
-            }else{
-                this.deleteBtn = '删除图片';
-            }
-            
-            console.log(this.showPicBtn);
-        },
         handleSelect(item){
             if(item.beSelected){
                 this.$set(item, "beSelected", false);
                 const removeIndex = this.deleteList.indexOf(item.originURL);
-                console.log(removeIndex);
+                // console.log(removeIndex);
                 if(removeIndex !== -1){
                      this.deleteList.splice(removeIndex, 1);
                 }
@@ -171,6 +184,45 @@ export default {
             }
             
             console.log(this.deleteList);
+        },
+        handleLeftClick(){
+            if(this.moveImagesBtn === '移动图片'){  
+                //进入选择状态
+                this.moveImagesBtn = '确认移动';
+                this.deleteBtn = '取消选择';
+                this.showPicBtn = true;
+            }else if(this.moveImagesBtn === '确认移动'){
+                if(this.deleteList.length === 0){
+                    this.$Message.warning('你还没选择任何图片呢！');
+                    return;
+                }
+                this.moveModal = true;
+            }else{ 
+                // 确认删除
+                if(this.deleteList.length === 0){
+                    this.$Message.warning('你还没选择任何图片呢！');
+                    return;
+                }                
+                this.confirmDelete();
+            }
+        },
+        handleRightClick(){
+            if(this.deleteBtn === '删除图片'){ 
+                //进入选择状态
+                console.log('删除！！！！！！！！！！！！！！！')
+                this.deleteBtn = '取消选择';
+                this.moveImagesBtn = '确认删除'
+                this.showPicBtn = true;
+            }else{ 
+                //取消选择
+                this.showPicBtn = false;
+                this.moveImagesBtn = '移动图片';
+                this.deleteBtn = '删除图片';
+                this.deleteList = [];
+                for(let item of this.imageList){
+                    this.$set(item, "beSelected", false);
+                } 
+            }
         },
         confirmDelete(){
             if(this.deleteList.length === 0){
@@ -187,12 +239,14 @@ export default {
             }, () => {
                 this.$Message.warning('删除失败！');
             });
+        },
+        confirmMove(){
+            console.log(this.albumMoveTo);
+            this.moveModal = false;
         }
-        
     },
     created(){
         this.albumPath = this.$route.params.path;
-        console.log(this.albumPath);
         this.getData();  
     }
 }
