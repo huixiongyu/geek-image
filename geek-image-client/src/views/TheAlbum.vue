@@ -241,8 +241,23 @@ export default {
             });
         },
         confirmMove(){
-            console.log(this.albumMoveTo);
-            this.moveModal = false;
+            const postData = {
+                fromAlbum: this.albumPath,
+                toAlbum: this.albumMoveTo,
+                moveList: this.deleteList
+            }
+            this.$axios.post('/api/album/move', postData)
+                .then(() =>{
+                    this.$Message.success('移动成功！');
+                    this.moveModal = false;
+                    location.reload();
+                    
+                }, () => {
+                    this.$Message.error('转移失败！');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
         }
     },
     created(){

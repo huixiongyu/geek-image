@@ -246,6 +246,70 @@ router.get('/:id', passport.authenticate('jwt', { session: false }),
         ctx.status = 200;
 });
 
+/*
+@route GET  /api/album/move
+@desc 移动相册的图片
+*/
+router.post('/move', passport.authenticate('jwt', { session: false }),
+    async ctx => {
+        const fromAlbum = ctx.request.body.fromAlbum;
+        const toAlbum = ctx.request.body.toAlbum;
+        const moveList = ctx.request.body.moveList;
+        const findFromAlbum = await Album.findById(fromAlbum);
+        const findToAlbum = await Album.findById(toAlbum);
+        if(moveList.length === 0 ){
+            ctx.status = 400;
+            ctx.body = {
+                message: '图片列表为空！'
+            }
+            return ;
+        }
+        if(!findFromAlbum){
+            ctx.body = {
+                message: '找不到原始相册！'
+            }
+            ctx.status = 400;
+            return ;
+        }
+        if(!findToAlbum){
+            ctx.body = {
+                message: '找不到要转移到的相册！'
+            }
+            ctx.status = 400;
+            return ;
+        }
+        // console.log(findFromAlbum.images);
+        for(let item of moveList){
+            for(let imageIndex in findFromAlbum.images){
+                if(item === findFromAlbum.images[imageIndex].originURL){
+                    //把图片推到目标相册里面，注意顺序，先转移再删除
+                    const newAlbum = {
+                        name: "images",
+                        originURL: findFromAlbum.images[imageIndex].originURL,
+                        markdownURL: findFromAlbum.images[imageIndex].markdownURL
+                    }
+                    findToAlbum.images.push(newAlbum);                    
+                    //删除原来相册的图片
+                    findFromAlbum.images.splice(imageIndex, 1);
+                }
+            }
+        }
+        //更新原相册图片
+        await Album.findOneAndUpdate(
+            { _id: fromAlbum},
+            {$set: findFromAlbum},
+            {new: true}
+        ); 
+        //更新目标相册图片    
+        await Album.findOneAndUpdate(
+            { _id: toAlbum},
+            {$set: findToAlbum},
+            {new: true}
+        ); 
+        ctx.status = 200;
+        ctx.body = { message: '图片移动成功！'};        
+    }
+);
 
 
 module.exports = router.routes();

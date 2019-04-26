@@ -511,9 +511,10 @@ export default {
                     console.log(error);
                 })
         },
-        selectAlbum(path){
-            console.log(path);
-            this.$router.push({ path: '/album' });
+        selectAlbum(name){
+            console.log(name);
+            const jumpTo = `/album/${name}`
+            this.$router.replace({path: jumpTo});
         }
     },
     created(){

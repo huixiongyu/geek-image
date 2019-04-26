@@ -123,7 +123,7 @@ export default {
                     }
                     this.candeleteAlbum = this.uploadSelect;
                     this.candeleteAlbum.splice(0, 1);
-                    console.log(this.candeleteAlbum)
+                    // console.log(this.candeleteAlbum)
                     // console.log(res);
                 })
                 .catch(error  => {
