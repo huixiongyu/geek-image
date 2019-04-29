@@ -12,7 +12,7 @@ export default {
     .admin{
         position: relative;
         width: 100%;
-        min-height: 650px;
-         background-color: #EEFFFF;
+        min-height: 1010px;
+        background-color: #EEFFFF;
     }
 </style>

@@ -164,7 +164,9 @@ export default {
     .home{
         position: relative;
         width: 100%;
-        min-height: 600px;
+        height: 100%;
+        overflow: hidden;
+        min-height: 1020px;
         background-color: #EEFFFF;
     }
     .upload-zone{

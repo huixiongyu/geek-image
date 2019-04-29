@@ -198,7 +198,7 @@ export default {
     .album{
         position: relative;
         width: 100%;
-        min-height: 650px;
+        min-height: 1010px;
         background-color: #EEFFFF;
     }
     .control-area{

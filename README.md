@@ -150,6 +150,10 @@ mounted () {
   * 获取相册里的图片  GET /api/album/:id
   * 获取特定相册的信息 GET /api/album/info
     * albumID 相册的id 
+  * 移动相册里的图片到另一个相册  POST /api/album/move
+    * fromAlbum 原始相册的id
+    * toAlbum 移动到的相册id
+    * moveList 要转移的图片ID
 
 
 

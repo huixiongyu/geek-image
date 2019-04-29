@@ -164,7 +164,6 @@ router.post('/delete', passport.authenticate('jwt', { session: false }),
 */
 router.post('/delete/image', passport.authenticate('jwt', { session: false }),
     async ctx => {
-        console.log('进来了')
         const deleteList = ctx.request.body.deleteList;
         const albumID = ctx.request.body.albumID;
         if(deleteList.length === 0)
