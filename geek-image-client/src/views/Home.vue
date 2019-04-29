@@ -58,6 +58,7 @@ export default {
             this.$axios.get(`/api/qiniu/config?phone=${this.$store.state.user.phone}`)
                 .then(res => {
                    this.actionAddress = res.data.address;
+                //    console.log(this.actionAddress);
                 })
                 .catch(error => {
                     console.log(error);
@@ -115,9 +116,10 @@ export default {
                 img.localURL = reader.result;
             }
             this.imageList.push(img);
-            // console.log(this.imageList);
+            console.log(this.imageList);
             return this.$axios.post('/api/qiniu/',{filename: fileName, phone: this.$store.state.user.phone})
                     .then(res => {
+                        console.log(res);
                         this.uploadForm = {
                             token: res.data.token,
                             key: res.data.key

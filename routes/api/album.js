@@ -150,6 +150,11 @@ router.post('/delete', passport.authenticate('jwt', { session: false }),
             ctx.body = {message: '该相册不存在！'};
             return ;
         }
+        if(findAlbum.name === '所有图片'){
+            ctx.status = 400;
+            ctx.body = {message: '该相册不可以删除！'};
+            return ;           
+        }
         await Album.remove({_id: deleteOne}, () =>{
             console.log('相册删除成功！');
         });

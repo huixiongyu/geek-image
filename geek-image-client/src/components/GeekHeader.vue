@@ -313,7 +313,8 @@ export default {
             rulesQiniu: {
                 url: [{ required: true, type:'url', message: '绑定域名不符合规范'}]
             },
-            albumsInfo: []
+            albumsInfo: [],
+            loginLock: false
         }
     },
     methods: {
@@ -344,6 +345,8 @@ export default {
                         phone: this.formLogin.phoneNum,
                         password: this.formLogin.password
                     }
+                    if(this.loginLock) return ;
+                    this.loginLock = true;
                     this.$axios.post('/api/users/login',loginData)
                         .then(res =>{
                             this.$Message.success('登录成功!♪(^∇^*)');
@@ -355,6 +358,7 @@ export default {
                             this.$store.commit("userInfo", decode);
                             this.loginModal = false;
                             this.login = true;
+                            this.loginLock = false;
                             this.$router.push("/");
                         })
                         .catch(error => {

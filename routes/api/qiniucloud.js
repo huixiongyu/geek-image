@@ -174,7 +174,7 @@ router.post('/foralbum', passport.authenticate('jwt', { session: false }),
           {new: true}
       );
       // 保存到  所有相册
-      const findAllAlbum = await Album.find({selected: true});
+      const findAllAlbum = await Album.find({name: '所有图片'});
       const itemID = findAllAlbum[0].id;
       console.log(itemID);
       await Album.findOneAndUpdate(
