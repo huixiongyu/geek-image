@@ -224,7 +224,8 @@ export default {
     .albums{
         position: relative;
         padding-bottom: 50px; 
-        padding-left: 150px;
+        padding-left: 50px;
+        padding-right: 50px;
         width: 100%;
         min-height: 550px;
         .box{
