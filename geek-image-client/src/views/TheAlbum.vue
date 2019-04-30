@@ -2,7 +2,7 @@
     <div class="album">
         <div class="control-area">
             <image-uploader :post-id="albumPath" class="uploader"></image-uploader>
-             <Button type="text" size="large" @click="hanldeRename">{{albumInfo.name}}</Button>
+             <Button type="text" size="large" @click="hanldeRename">{{albumInfo.name}}-{{albumInfo.picNum}}</Button>
              <div class="delete-btn">
                  <Button type="primary" @click="handleLeftClick">{{moveImagesBtn}}</Button>
                 <Button type="error" @click="handleRightClick">{{deleteBtn}}</Button>

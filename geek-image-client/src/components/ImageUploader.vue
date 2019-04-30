@@ -80,9 +80,12 @@
                                     location.reload();
                                 }, 2000);
                             }, err => {
-                                this.$Message.warning('文件类型不允许');
+                                this.$Message.error('上传失败');
                                 console.log(err);
                             })
+                            .catch(error => {
+                                console.log(error);
+                            });
                 }else{
                     return this.$axios.post('/api/qiniu/foralbum',
                                 {filename: fileName, 

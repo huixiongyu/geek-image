@@ -23,18 +23,17 @@
         <div class="load-files">
             <div class="files-item" v-for="item in imageList" :key='item.realURL'>
                 <div class="image" :style="{'background-image': 'url(' + item.localURL +')'}"></div>
-                <div class="url">
+                <div class="pushing" v-if="item.pushing">
+                    <Spin fix>
+                        <Icon type="ios-loading" size=24 class="demo-spin-icon-load"></Icon>
+                        <div>Loading</div>
+                    </Spin>               
+                </div>
+                <div class="url" v-if="!item.pushing">
                     <a :href="item.realURL" target="_blank">{{item.realURL}}</a>
                 </div>
-                <div class="clipbord">
-                    <Spin fix v-if="item.pushing">
-                        <div class="loader">
-                            <svg class="circular" viewBox="25 25 50 50">
-                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
-                            </svg>
-                        </div>
-                    </Spin>
-                    <Icon type="md-copy" size="32" @click="copyMarkdown(item.markdownURL)" v-else/>
+                <div class="clipbord" v-if="!item.pushing">
+                    <Icon type="md-copy" size="32" @click="copyMarkdown(item.markdownURL)"/>
                 </div>
             </div>
         </div>
@@ -106,8 +105,8 @@ export default {
             const realURL =`http://qiniu.hackslog.cn/${fileName}`;
             const img = {
                 localURL: null,
+                pushing: true,
                 realURL,
-                pushing: true, 
                 markdownURL: ''
             };
             const reader = new FileReader();
@@ -116,6 +115,7 @@ export default {
                 img.localURL = reader.result;
             }
             this.imageList.push(img);
+            // this.$set(img, "pushing", true);
             console.log(this.imageList);
             return this.$axios.post('/api/qiniu/',{filename: fileName, phone: this.$store.state.user.phone})
                     .then(res => {
@@ -127,14 +127,18 @@ export default {
                         for(let item of this.imageList){
                             if(realURL === item.realURL){
                                 item.markdownURL = res.data.markdownURL;
-                                item.pushing = false;
+                                // item.pushing = false;
+                                this.$set(item, "pushing", false);
                             }
                         }
                         console.log(res.data.markdownURL);
                         console.log(res.data.originURL);
                     }, err => {
-                        this.$Message.warning('文件类型不允许! 或者更新一下配置信息吧！');
+                        this.$Message.error('上传失败');
                         console.log(err);
+                    })
+                    .catch(error => {
+                        console.log(error);
                     })
         },
         handleSuccess (res) {
@@ -238,7 +242,23 @@ export default {
                 align-content: center;
                 align-items: center;
             }
+            .pushing{
+                width: 600px;
+                height: 200px;
+                display: flex;
+                justify-content: center;
+                align-content: center;
+                align-items: center;
+                .ivu-spin{
+                    width: 100%;
+                    height: 100%;
+                    background-color: #EEFFFF;
+                }
+            }
         }
+    }
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
     }
 </style>
 

@@ -1,11 +1,11 @@
 <template>
     <div class="header">
         <div class="header-left">
-            <router-link tag="div" to="/" class="logo">极客图床</router-link>
-            <div class="upload nav-word" @click="handleToUp">
+            <div @click="handleToUp" class="logo">极客图床</div>
+            <div class="upload nav-word" :class="activePage.upload ? 'upload-active' : '' " @click="handleToUp">
                 <i class="iconfont">&#xe62e;</i>上传
             </div>
-            <div class="nav-album nav-word" @click="handleToAlbum">
+            <div class="nav-album nav-word" :class="activePage.album ? 'album-active' : '' " @click="handleToAlbum">
                 <Dropdown @on-click="selectAlbum">
                     <i class="iconfont">&#xe646;</i>相册
                     <DropdownMenu slot="list">
@@ -18,7 +18,7 @@
                     </DropdownMenu>
                 </Dropdown>    
             </div>
-            <div class="manage nav-word" @click="handleToAdmin">
+            <div class="manage nav-word" :class="activePage.admin ? 'admin-active' : '' " @click="handleToAdmin">
                 <i class="iconfont">&#xe600;</i>控制台
             </div>
         </div>
@@ -314,7 +314,12 @@ export default {
                 url: [{ required: true, type:'url', message: '绑定域名不符合规范'}]
             },
             albumsInfo: [],
-            loginLock: false
+            loginLock: false,
+            activePage: {
+                upload: false,
+                album: false,
+                admin: false
+            }
         }
     },
     methods: {
@@ -475,12 +480,24 @@ export default {
             return true;
         },
         handleToUp(){
+            localStorage.setItem('activePage', 'upload');
+            this.activePage.admin = false;
+            this.activePage.upload = true;
+            this.activePage.album = false; 
             this.$router.push('/');
         },
         handleToAlbum(){
+            localStorage.setItem('activePage', 'album');
+            this.activePage.admin = false;
+            this.activePage.upload = false;
+            this.activePage.album = true;         
             this.$router.push('/album');
         },
         handleToAdmin(){
+            localStorage.setItem('activePage', 'admin');
+            this.activePage.admin = true;
+            this.activePage.upload = false;
+            this.activePage.album = false;         
             this.$router.push('/admin');
         },
         handleSelectItem(name){
@@ -519,12 +536,41 @@ export default {
             console.log(name);
             const jumpTo = `/album/${name}`
             this.$router.replace({path: jumpTo});
+        },
+        setActive(){
+            if(localStorage.getItem('activePage')){
+                const name = localStorage.getItem('activePage');
+                console.log(name);
+                if(name === 'upload'){
+                    // this.activePage.upload = true;
+                    this.$nextTick(() => {
+                        this.$set(this.activePage, "upload", true);
+                    })
+                }else if(name === 'album'){
+                    // this.activePage.album = true;
+                    this.$nextTick(() => {
+                        this.$set(this.activePage, "album", true);
+                    })
+                }else{
+                    // this.activePage.admin = true;
+                    this.$nextTick(() => {
+                        this.$set(this.activePage, "admin", true);
+                    })
+                }
+            }else{
+                this.$nextTick(() => {
+                    this.$set(this.activePage, "upload", true);
+                })  
+            }
         }
     },
     created(){
         this.login = this.$store.state.isLogin;
         this.avatar = this.$store.state.user.avatar;
         this.getData();
+    },
+    mounted(){
+        this.setActive();
     }
 }
 </script>
@@ -555,7 +601,18 @@ export default {
         .nav-word{
             font-size: 18px;
             cursor: pointer;
+            border-radius: 5px;
         }
+        .upload-active{
+            background-color: #00FFFF;
+        }
+        .album-active{
+            background-color: #FFA500;
+        }
+        .admin-active{
+            background-color: #9400D3;
+            color: white;
+        }        
     }
     .header-right{
         width: 200px;
