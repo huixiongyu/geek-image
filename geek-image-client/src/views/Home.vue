@@ -243,7 +243,8 @@ export default {
                 align-items: center;
             }
             .pushing{
-                width: 600px;
+                margin-left: 50px;
+                width: 500px;
                 height: 200px;
                 display: flex;
                 justify-content: center;

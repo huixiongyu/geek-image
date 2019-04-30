@@ -78,7 +78,7 @@
                                 }
                                 setTimeout( () => {
                                     location.reload();
-                                }, 2000);
+                                }, 8000);
                             }, err => {
                                 this.$Message.error('上传失败');
                                 console.log(err);

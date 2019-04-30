@@ -542,25 +542,14 @@ export default {
                 const name = localStorage.getItem('activePage');
                 console.log(name);
                 if(name === 'upload'){
-                    // this.activePage.upload = true;
-                    this.$nextTick(() => {
-                        this.$set(this.activePage, "upload", true);
-                    })
+                    this.activePage.upload = true;
                 }else if(name === 'album'){
-                    // this.activePage.album = true;
-                    this.$nextTick(() => {
-                        this.$set(this.activePage, "album", true);
-                    })
-                }else{
-                    // this.activePage.admin = true;
-                    this.$nextTick(() => {
-                        this.$set(this.activePage, "admin", true);
-                    })
+                    this.activePage.album = true;            }
+                else{
+                    this.activePage.admin = true; 
                 }
             }else{
-                this.$nextTick(() => {
-                    this.$set(this.activePage, "upload", true);
-                })  
+                this.activePage.upload = true           
             }
         }
     },
