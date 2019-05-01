@@ -11,7 +11,8 @@
         <div class="albums">
             <div class="box" v-for="item in imageList" :key="item.originURL" @click="handleSelect(item)">
                 <div class="pic">
-                    <img :src="item.originURL"/>
+                    <!-- <img :src="item.originURL"/> -->
+                    <img v-lazy="item.originURL"/>
                      <i class="iconfont select-pic" v-show="(!item.beSelected) && showPicBtn">&#xe72e;</i>
                      <i class="iconfont select-pic be-selected" v-show="item.beSelected && showPicBtn">&#xe62d;</i>
                 </div>

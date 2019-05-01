@@ -8,7 +8,17 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import './assets/iconfont/iconfont.css'
 import VueClipboard from 'vue-clipboard2'
+import VueLazyload from 'vue-lazyload' 
+
+Vue.use(VueLazyload)
  
+// or with options
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: './assets/images/error.png',
+  loading: './assets/svg/loading-bars.svg',
+  attempt: 1
+})
 
 axios.interceptors.request.use(
   config => {
