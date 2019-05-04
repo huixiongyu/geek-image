@@ -25,13 +25,18 @@
         },
         methods: {
             getAddress(){
-                this.$axios.get(`/api/qiniu/config?phone=${this.$store.state.user.phone}`)
-                    .then(res => {
-                        this.actionAddress = res.data.address;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
+                const address = localStorage.getItem('actionAddress');
+                if(address){
+                    this.actionAddress = address;
+                }else{
+                    this.$axios.get(`/api/qiniu/config?phone=${this.$store.state.user.phone}`)
+                        .then(res => {
+                            this.actionAddress = res.data.address;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                }
             },
             addZero(m) {
                 return m < 10 ? '0' + m : m;

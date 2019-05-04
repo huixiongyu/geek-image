@@ -11,7 +11,11 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        localStorage.setItem('activePage', 'upload');
+        next();
+      }
     },
     {
       path: '/album',
@@ -19,7 +23,11 @@ export default new Router({
       component: () => import('./views/Album.vue'),
       meta:  {
         requiresAuth: true
-      }
+      },
+      beforeEnter: (to, from, next) => {
+        localStorage.setItem('activePage', 'album');
+        next();
+      }      
     },
     {
       path: '/album/:path',
@@ -27,7 +35,11 @@ export default new Router({
       component: () => import('./views/TheAlbum.vue'),
       meta:  {
         requiresAuth: true
-      }
+      },
+      beforeEnter: (to, from, next) => {
+        localStorage.setItem('activePage', 'album');
+        next();
+      }       
     },
     {
       path: '/admin',
@@ -35,7 +47,11 @@ export default new Router({
       component: () => import('./views/CloudAdmin.vue'),
       meta:  {
         requiresAuth: true
-      }
+      },
+      beforeEnter: (to, from, next) => {
+        localStorage.setItem('activePage', 'admin');
+        next();
+      }       
     }
   ]
 })

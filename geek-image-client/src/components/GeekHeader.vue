@@ -338,6 +338,7 @@ export default {
                     this.qiniuInfo.bucket = res.data.bucketName;
                     this.qiniuInfo.zone = res.data.zone;
                     this.qiniuInfo.url = res.data.bindURL;
+                    localStorage.setItem('actionAddress', res.data.address);
                 })
                 .catch(error => {
                     console.log(error);
@@ -538,8 +539,8 @@ export default {
             this.$router.replace({path: jumpTo});
         },
         setActive(){
-            if(localStorage.getItem('activePage')){
-                const name = localStorage.getItem('activePage');
+            const name = localStorage.getItem('activePage');
+            if(name){
                 console.log(name);
                 if(name === 'upload'){
                     this.activePage.admin = false;
