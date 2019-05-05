@@ -541,7 +541,6 @@ export default {
         setActive(){
             const name = localStorage.getItem('activePage');
             if(name){
-                console.log(name);
                 if(name === 'upload'){
                     this.activePage.admin = false;
                     this.activePage.upload = true;

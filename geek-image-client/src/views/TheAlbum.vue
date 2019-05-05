@@ -332,7 +332,7 @@ export default {
                 }
             }
             .tools{
-                width: 100%;
+                width: 260px;
                 height: 38px;
                 display: flex;
                 justify-content: space-between;

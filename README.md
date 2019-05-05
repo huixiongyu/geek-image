@@ -3,6 +3,8 @@
 
 本项目2019年4月8日开始构建
 
+19年5月5日上线啦~~~[http://pic.hackslog.com](http://pic.hackslog.com/)
+
 ## 运行
 
 config文件夹下的keys.js
@@ -21,7 +23,10 @@ module.exports = {
 命令：
 
 ```
-npm run dev
+//服务端
+npm run start
+//客户端
+npm run start
 // 注册
 // 登录
 // 配置七牛云密钥
@@ -71,6 +76,9 @@ npm run dev
   * [vue-waterfall2](https://segmentfault.com/a/1190000017042878)
   * [vue-waterfall-easy](https://www.npmjs.com/package/vue-waterfall-easy)
   * [waterfall](https://github.com/watson-yan/waterfall) 
+* [koa2-cors](https://github.com/zadzbw/koa2-cors) 允许跨域 
+* [koa2-connect-history-api-fallback](https://www.npmjs.com/package/koa2-connect-history-api-fallback) 打包后访问`默认路径：默认端口/xxx`  无法访问，需要这个把路由转给vue-router
+* [http-server](https://www.npmjs.com/package/http-server)
 
 **VScode、Postman、mlab**
 
@@ -155,6 +163,30 @@ mounted () {
     * toAlbum 移动到的相册id
     * moveList 要转移的图片ID
 
+## 部署概述
+
+几个要点：
+
+1. 服务端配置跨域。在开发环境下使用了cross-env来实现跨域，在产品上线的使用使用koa2-cors来实现
+2. 配置客户端的环境变量。分别是.env.development和.env.production两个文件，其中变量是VUE_APP_开头，主要是axios的baseURL的配置。vue-router也有base配置，默认值是 `/` ,一般情况不用改
+3. 数据库连接方式的改变。如果本来就是远程的数据库那不用改变
+
+前端页面打包使用`npm run build命令` 复制出dist文件夹里面的静态文件到服务器即可。nginx安装后默认的静态文件放在`/var/www` 下面，不过也可以放在`/root` 和`/home` 等其他地方。部署的时候前端的端口没有意义，主要是注意axios请求后端的接口，使用pm2启动后端，前端用Nginx代理到自己的静态文件，因为静态文件里面有异步请求，自动会跟服务端进行交互。
+
+简单的Nginx配置，在目录`/etc/nginx/conf.d/` 下面创建自己前端项目反向代理的配置文件，比如pic.config、blog.config等，修改完毕后nginx会自动跟nginx.conf合并
+
+```
+server {
+        listen  80;
+        server_name pic.hackslog.com;
+        location / {
+                root /var/www/pic/;
+                try_files $uri $uri/ /index.html;
+                index index.html;
+        }
+}
+```
+
 
 
 ## 收获
@@ -194,6 +226,45 @@ firewall-cmd --zone=public --add-port=6379/tcp --permanent
 * 在可迭代对象for..in中，判断item的序号不能使用`=== ` 
 * 报错`Invalid prop: type check failed for prop "model". Expected Object, got Array` 一般出现在v-model中，我不小心在Form表单中绑定了数组
 * mongoose的findById返回的直接是该元素
+* Linux上使用命令`npm install pm2 -g` 后敲 `pm2 list` 得到的是 `pm2: command not found` 
+
+这种情况要建立软链接，注意pm2的安装地址：
+
+![image](http://qiniu.hackslog.cn/2019-05-05/260169984.png)
+
+然后软链接的命令是： `ln /usr/local/nodejs/bin/pm2  /usr/local/bin/` ,完成后的效果：
+
+![image](http://qiniu.hackslog.cn/2019-05-05/449891161.png)
+
+* pm2常用命令：
+
+```
+pm2 start app.js  //启动文件
+pm2 stop all #停止所有应用
+pm2 stop 0 #停止id为0的应用
+pm2 reload all #重启当下所有应用
+pm2 list #列出pm2启动的程序
+```
+
+* Nginx配置   ，路径是`/etc/nginx/`
+  * nginx -t检查配置是否正常 
+  * sudo service nginx reload 静默更新   
+
+```
+
+server {
+        listen  80;
+        server_name pic.hackslog.com;
+        location / {
+                root /var/www/pic/;
+                try_files $uri $uri/ /index.html;
+                index index.html;
+        }
+}
+
+```
+
+
 
 ![image](http://qiniu.hackslog.cn/2019-04-18/510067945.jpg)
 
